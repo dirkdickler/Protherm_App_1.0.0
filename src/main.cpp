@@ -19,7 +19,7 @@
 #include "esp_log.h"
 //#include <TaskScheduler.h>
 
-bool GetData_flag = false; 
+bool GetData_flag = false;
 // Task t1(1050, TASK_FOREVER, &t1_MAIN);
 // Task t2(20, TASK_FOREVER, &t2_ethTask);
 // Scheduler runner;
@@ -85,20 +85,39 @@ void testFunct()
   char locBuff[2048];
   uint32_t index = 0;
 
-  Serial.println(F("Desel pozadavek na main"));
-  Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
+  log_i("Desel pozadavek na main");
+  log_i("Main ma delku %u", strlen(DebugLog_html)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
   server.setContentLength(strlen(DebugLog_html));
 
-  // const String *ptrString = &locBuff;
-  memcpy(locBuff, DebugLog_html, 100);
-  server.send(200, "text/html", locBuff, 0);
-  uint16_t kolkoPoslnaych = 0;
+  memset(locBuff, 0, sizeof(locBuff));
+  server.send(200, "text/html", locBuff);
+  u32 kolkoPoslnaych = 0;
+  u32 velkostStranek = strlen(DebugLog_html);
   do
   {
-    memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], 500);
-    server.sendContent(locBuff, 500);
-    kolkoPoslnaych += 500;
-  } while (kolkoPoslnaych < strlen(DebugLog_html));
+    if (velkostStranek < 1000)
+    {
+      memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], velkostStranek);
+      server.sendContent(locBuff, velkostStranek);
+      kolkoPoslnaych = velkostStranek;
+    }
+    else
+    {
+      u32 zostava = velkostStranek - kolkoPoslnaych;
+      if (zostava < 1000)
+      {
+        memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], zostava);
+        server.sendContent(locBuff, zostava);
+        kolkoPoslnaych += zostava;
+      }
+      else
+      {
+        memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], 1000);
+        server.sendContent(locBuff, 1000);
+        kolkoPoslnaych += 1000;
+      }
+    }
+  } while (kolkoPoslnaych < velkostStranek);
 
   // File file = SD.open("/aaa.txt", FILE_READ);
   //  server.streamFile(file, "text/html");
@@ -110,23 +129,39 @@ void hlavne()
   char locBuff[2048];
   uint32_t index = 0;
 
-  Serial.println(F("Desel pozadavek na hlavne"));
-  Serial.println("Hlavne ma delku" + String(strlen(page_hlavne)));
+  log_i("Desel pozadavek na main");
+  log_i("Main ma delku %u", strlen(page_hlavne)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
   server.setContentLength(strlen(page_hlavne));
 
-  memcpy(locBuff, page_hlavne, 100);
-  server.send(200, "text/html", locBuff, 0);
-  uint16_t kolkoPoslnaych = 0;
+  memset(locBuff, 0, sizeof(locBuff));
+  server.send(200, "text/html", locBuff);
+  u32 kolkoPoslnaych = 0;
+  u32 velkostStranek = strlen(page_hlavne);
   do
   {
-    memcpy(locBuff, &page_hlavne[kolkoPoslnaych], 1000);
-    server.sendContent(locBuff, 1000);
-    kolkoPoslnaych += 1000;
-  } while (kolkoPoslnaych < strlen(page_hlavne));
-
-  // File file = SD.open("/aaa.txt", FILE_READ);
-  //  server.streamFile(file, "text/html");
-  //  file.close();
+    if (velkostStranek < 1000)
+    {
+      memcpy(locBuff, &page_hlavne[kolkoPoslnaych], velkostStranek);
+      server.sendContent(locBuff, velkostStranek);
+      kolkoPoslnaych = velkostStranek;
+    }
+    else
+    {
+      u32 zostava = velkostStranek - kolkoPoslnaych;
+      if (zostava < 1000)
+      {
+        memcpy(locBuff, &page_hlavne[kolkoPoslnaych], zostava);
+        server.sendContent(locBuff, zostava);
+        kolkoPoslnaych += zostava;
+      }
+      else
+      {
+        memcpy(locBuff, &page_hlavne[kolkoPoslnaych], 1000);
+        server.sendContent(locBuff, 1000);
+        kolkoPoslnaych += 1000;
+      }
+    }
+  } while (kolkoPoslnaych < velkostStranek);
 }
 
 void ReadSuborzSD()
@@ -169,7 +204,7 @@ void setup(void)
 
   log_i("Idem citat subore z SD karty po init web");
   NacitajSuborzSD();
-  
+
   // assert(rc == pdPASS);
 }
 
@@ -223,7 +258,7 @@ void FuncServer_On(void)
               server.send(200, F("text/html"), jsonString); });
 
   server.serveStatic("/aaa", SD, "/aaa.txt"); // https://randomnerdtutorials.com/esp32-web-server-microsd-card/
-  //server.onNotFound(handleNotFound);
+  // server.onNotFound(handleNotFound);
   log_i("Koniec funkcie");
 }
 
