@@ -243,7 +243,7 @@ void FuncServer_On(void)
   // server.serveStatic("/page3", SPIFFS, "/page3.html");
   server.serveStatic("/vlajka", SPIFFS, "/CanadaFlag_3.jpg");
 
-  server.on("/main", HTTP_GET, testFunct);
+  server.on("/main", HTTP_GET, testFunct); 
   server.on("/hlavne", HTTP_GET, hlavne);
 
   server.on("/subor", HTTP_GET, ReadSuborzSD);
