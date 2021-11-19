@@ -17,6 +17,7 @@
 #include "HelpFunction.h"
 #include "Pin_assigment.h"
 #include "esp_log.h"
+
 //#include <TaskScheduler.h>
 
 bool GetData_flag = false;
@@ -227,7 +228,7 @@ void FuncServer_On(void)
               ET_LOGWARN1(F("TCP 0 status reg:"), w5500.readSnSR(7));
               ET_LOGWARN1(F("TCP1 status reg:"), w5500.readSnSR(6));
 
-              server.send(200, F("text/plain"), F("Deska jede")); });
+              server.send(200, F("text/plain"), F("Deska jede")); }); 
 
   server.on(F("/heslo"), []()
             {
