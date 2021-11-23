@@ -18,6 +18,12 @@
 #include "Pin_assigment.h"
 #include "esp_log.h"
 
+#include "ramdisk.h"
+//#define AUTO_ALLOCATE_DISK
+#define BLOCK_COUNT 2 * 100
+#define BLOCK_SIZE 512
+USBramdisk dev;
+
 //#include <TaskScheduler.h>
 
 bool GetData_flag = false;
@@ -178,12 +184,23 @@ void ReadSuborzSD()
 
 char buff_extra[4001];
 
+
+
 void setup(void)
 {
   Serial.begin(115200);
-  Serial.println("Spustam applikaciu...XXXX1234");
+  Serial.println("Spustam applikaciu...Y 7");
   System_init();
   NacitajSuborzSD();
+
+  dev.setCapacity(BLOCK_COUNT, BLOCK_SIZE); // if PSRAM is enableb, then ramdisk will be initialized in it
+
+  if (dev.begin())
+  {
+    Serial.println("MSC lun 1 begin");
+  }
+  else
+    log_e("LUN 1 failed");
 
   FuncServer_On();
 
@@ -228,7 +245,7 @@ void FuncServer_On(void)
               ET_LOGWARN1(F("TCP 0 status reg:"), w5500.readSnSR(7));
               ET_LOGWARN1(F("TCP1 status reg:"), w5500.readSnSR(6));
 
-              server.send(200, F("text/plain"), F("Deska jede")); }); 
+              server.send(200, F("text/plain"), F("Deska jede")); });
 
   server.on(F("/heslo"), []()
             {
@@ -240,11 +257,11 @@ void FuncServer_On(void)
 
   // server.on("/list", HTTP_GET, printDirectory);
 
-  // server.serveStatic("/page2", SPIFFS, "/page2.html");
-  // server.serveStatic("/page3", SPIFFS, "/page3.html");
+  server.serveStatic("/page2", SPIFFS, "/page2.html");
+  server.serveStatic("/page3", SPIFFS, "/page3.html");
   server.serveStatic("/vlajka", SPIFFS, "/CanadaFlag_3.jpg");
 
-  server.on("/main", HTTP_GET, testFunct); 
+  server.on("/main", HTTP_GET, testFunct);
   server.on("/hlavne", HTTP_GET, hlavne);
 
   server.on("/subor", HTTP_GET, ReadSuborzSD);
