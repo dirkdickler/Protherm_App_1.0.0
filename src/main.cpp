@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <esp_task_wdt.h>
-
 #include "define.h"
 #include <SPI.h>
 #include "Ethernet3.h"
@@ -11,18 +10,12 @@
 #include <Ticker.h>
 #include "index.html"
 #include <Arduino_JSON.h>
-
 #include "main.h"
 #include "constants.h"
 #include "HelpFunction.h"
 #include "Pin_assigment.h"
 #include "esp_log.h"
-
-#include "ramdisk.h"
-//#define AUTO_ALLOCATE_DISK
-#define BLOCK_COUNT 2 * 100
-#define BLOCK_SIZE 512
-USBramdisk dev;
+//#include <EthernetUdp.h>
 
 //#include <TaskScheduler.h>
 
@@ -43,6 +36,9 @@ IPAddress primaryDNS(8, 8, 8, 8);   // optional
 IPAddress secondaryDNS(8, 8, 4, 4); // optional
 
 EthernetWebServer server(80);
+
+char NazovSiete[30];
+char Heslo[30];
 
 Ticker timer_10ms(Loop_10ms, 100, 0, MILLIS);
 JSONVar myObject;
@@ -184,8 +180,6 @@ void ReadSuborzSD()
 
 char buff_extra[4001];
 
-
-
 void setup(void)
 {
   Serial.begin(115200);
@@ -193,15 +187,7 @@ void setup(void)
   System_init();
   NacitajSuborzSD();
 
-  dev.setCapacity(BLOCK_COUNT, BLOCK_SIZE); // if PSRAM is enableb, then ramdisk will be initialized in it
-
-  if (dev.begin())
-  {
-    Serial.println("MSC lun 1 begin");
-  }
-  else
-    log_e("LUN 1 failed");
-
+  NacitajEEPROM_setting();
   FuncServer_On();
 
   server.begin();
@@ -224,6 +210,26 @@ void setup(void)
   NacitajSuborzSD();
 
   // assert(rc == pdPASS);
+
+  xTaskCreatePinnedToCore(
+      t1_MAIN, // Task function
+      "task1", // Name
+      3000,    // Stack size
+      nullptr, // Parameters
+      1,       // Priority
+      &htask1, // handle
+      0        // CPU
+  );
+
+  xTaskCreatePinnedToCore(
+      t2_ethTask, // Task function
+      "task2",    // Name
+      3000,       // Stack size
+      nullptr,    // Parameters
+      1,          // Priority
+      &htask2,    // handle
+      0           // CPU
+  );
 }
 
 void loop(void)
@@ -259,8 +265,9 @@ void FuncServer_On(void)
 
   server.serveStatic("/page2", SPIFFS, "/page2.html");
   server.serveStatic("/page3", SPIFFS, "/page3.html");
-  server.serveStatic("/vlajka", SPIFFS, "/CanadaFlag_3.jpg");
-
+  server.serveStatic("/vlajka1", SPIFFS, "/CanadaFlag_1.png");
+  server.serveStatic("/vlajka2", SPIFFS, "/CanadaFlag_2.png");
+  server.serveStatic("/vlajka3", SPIFFS, "/CanadaFlag_3.jpg");
   server.on("/main", HTTP_GET, testFunct);
   server.on("/hlavne", HTTP_GET, hlavne);
 
@@ -310,5 +317,29 @@ void TCPhandler(void)
   else if (st == 0x13) // SOCK_Init
   {
     listen(6);
+  }
+}
+
+void t1_MAIN(void *arg)
+{
+  log_i("Spustam Task1");
+  while (1)
+  {
+    UDPhandler();
+    // log_i("Task 1 loop");
+    delay(10);
+  }
+}
+
+static EthernetWebServer serverr(8080);
+void t2_ethTask(void *arg)
+{
+
+  log_i("Spustam Task2");
+
+  while (1)
+  {
+    // log_i("Task 2 loop");
+    delay(500);
   }
 }

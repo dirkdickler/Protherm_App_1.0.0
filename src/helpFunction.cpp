@@ -1,18 +1,25 @@
 //#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
 
 #include <Arduino.h>
-//#include"constants.h"
+#include "constants.h"
 #include "Pin_assigment.h"
 //#include "HelpFunction.h"
 #include "define.h"
 #include "constants.h"
 #include "Ethernet3.h"
-#include"main.h"
+#include "main.h"
+#include <EEPROM.h>
 
 #include "SD.h"
 #include "FS.h"
 #include "SPIFFS.h"
 #include "esp_log.h"
+#include <EthernetUdp3.h>
+
+EthernetUDP Udp;
+char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; // buffer to hold incoming packet,
+char ReplyBuffer[] = "000102030405 ProthermEnergy";       // a string to send back
+
 
 void System_init(void)
 {
@@ -115,7 +122,7 @@ void System_init(void)
 	// Use Static IP
 	// Ethernet.begin(mac[index], ip);
 	Ethernet.begin(mac[6], local_IP, subnet, gateway, primaryDNS);
-
+    Udp.begin(9999); // toto musi byt az po  Ethernet.begin
 	log_i("Using mac index = %u", index);
 	String slovo;
 	slovo = String(Ethernet.localIP());
@@ -206,5 +213,111 @@ void NacitajSuborzSD(void)
 			log_i("================");
 		}
 		profile.close();
+	}
+}
+
+int8_t NacitajEEPROM_setting(void)
+{
+
+	if (!EEPROM.begin(500))
+	{
+		log_i("Failed to initialise EEPROM");
+		return -1;
+	}
+
+	log_i("Succes to initialise EEPROM");
+
+	EEPROM.readBytes(EE_NazovSiete, NazovSiete, 16);
+
+	if (NazovSiete[0] != 0xff) // ak mas novy modul tak EEPROM vrati prazdne hodnoty, preto ich neprepisem z EEPROM, ale necham default
+	{
+		String apipch = EEPROM.readString(EE_IPadresa); // "192.168.1.11";
+		local_IP = str2IP(apipch);
+
+		apipch = EEPROM.readString(EE_SUBNET);
+		subnet = str2IP(apipch);
+
+		apipch = EEPROM.readString(EE_Brana);
+		gateway = str2IP(apipch);
+
+		memset(NazovSiete, 0, sizeof(NazovSiete));
+		memset(Heslo, 0, sizeof(Heslo));
+		u8 dd = EEPROM.readBytes(EE_NazovSiete, NazovSiete, 16);
+		u8 ww = EEPROM.readBytes(EE_Heslosiete, Heslo, 20);
+		log_i("Nacitany nazov siete a heslo z EEPROM: %s  a %s\r\n", NazovSiete, Heslo);
+		return 0;
+	}
+	else
+	{
+		log_i("EEPROM je este prazna, nachavma default hodnoty");
+		return 1;
+	}
+}
+String ipToString(IPAddress ip)
+{
+	String s = "";
+	for (int i = 0; i < 4; i++)
+		s += i ? "." + String(ip[i]) : String(ip[i]);
+	return s;
+}
+
+int getIpBlock(int index, String str)
+{
+	char separator = '.';
+	int found = 0;
+	int strIndex[] = {0, -1};
+	int maxIndex = str.length() - 1;
+
+	for (int i = 0; i <= maxIndex && found <= index; i++)
+	{
+		if (str.charAt(i) == separator || i == maxIndex)
+		{
+			found++;
+			strIndex[0] = strIndex[1] + 1;
+			strIndex[1] = (i == maxIndex) ? i + 1 : i;
+		}
+	}
+
+	return found > index ? str.substring(strIndex[0], strIndex[1]).toInt() : 0;
+}
+
+IPAddress str2IP(String str)
+{
+
+	IPAddress ret(getIpBlock(0, str), getIpBlock(1, str), getIpBlock(2, str), getIpBlock(3, str));
+	return ret;
+}
+
+
+
+void UDPhandler(void)
+{
+	int packetSize = Udp.parsePacket();
+	if (packetSize)
+	{
+		Serial.print("Received packet of size ");
+		Serial.println(packetSize);
+		Serial.print("From ");
+		IPAddress remote = Udp.remoteIP();
+		for (int i = 0; i < 4; i++)
+		{
+			Serial.print(remote[i], DEC);
+			if (i < 3)
+			{
+				Serial.print(".");
+			}
+		}
+		Serial.print(", port ");
+		Serial.println(Udp.remotePort());
+
+		// read the packet into packetBufffer
+		Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+		Serial.println("Contents:");
+		Serial.println(packetBuffer);
+
+		// send a reply, to the IP address and port that sent us the packet we received
+		Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
+		Udp.write(ReplyBuffer);
+		Udp.endPacket();
 	}
 }

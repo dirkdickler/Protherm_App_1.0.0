@@ -46,4 +46,5 @@ String VyberZaznam(LOGBUFF_t *logBuffStruc, bool zmazZaznam);
 u16 VratPocetZaznamu(LOGBUFF_t *logBuffStruc);
 
 void NacitajSuborzSD(void);
+void UDPhandler(void);
 #endif
