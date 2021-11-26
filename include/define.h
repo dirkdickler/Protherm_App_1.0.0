@@ -34,6 +34,14 @@
 #define DEBUG_ETHERNET_WEBSERVER_PORT Serial
 #define _ETHERNET_WEBSERVER_LOGLEVEL_ 0
 
+#define sbi(adr,bitt) (adr|=(1<<bitt))
+#define cbi(adr,bitt) (adr&=~(1<<bitt))
+#define isbit(adr,bitt) (adr &(1<<bitt))
+#define HI(ii) ( ii >> 8)
+#define LO(ii) ( ii & 0xff)
+
+
+
 #define USE_LITTLEFS false
 #define USE_SPIFFS true
 

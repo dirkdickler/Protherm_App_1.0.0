@@ -136,6 +136,8 @@ void encoder();
 
 void t1_MAIN(void *arg); //void t1_MAIN();
 void t2_ethTask(void *arg);
+void Task_handle_ADE9078_Code(void *arg);
+
 void getdata();
 void returnOK();
 void TCPhandler(void);

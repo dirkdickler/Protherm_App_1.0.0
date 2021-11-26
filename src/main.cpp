@@ -15,7 +15,7 @@
 #include "HelpFunction.h"
 #include "Pin_assigment.h"
 #include "esp_log.h"
-//#include <EthernetUdp.h>
+#include "ADE9078.h"
 
 //#include <TaskScheduler.h>
 
@@ -25,6 +25,7 @@ bool GetData_flag = false;
 // Scheduler runner;
 TaskHandle_t htask1;
 TaskHandle_t htask2;
+TaskHandle_t Task_handleADE9078;
 
 const char *www_username = "qqq";
 const char *www_password = "www";
@@ -183,10 +184,11 @@ char buff_extra[4001];
 
 void setup(void)
 {
+
   Serial.begin(115200);
-  Serial.println("Spustam applikaciu...Y 7");
+  Serial.println("Spustam applikaciu...Y 9");
   System_init();
-  NacitajSuborzSD();
+  // NacitajSuborzSD();
 
   NacitajEEPROM_setting();
   FuncServer_On();
@@ -208,7 +210,7 @@ void setup(void)
   // t2.enable();
 
   log_i("Idem citat subore z SD karty po init web");
-  NacitajSuborzSD();
+  // NacitajSuborzSD();
 
   // assert(rc == pdPASS);
 
@@ -230,6 +232,16 @@ void setup(void)
       1,          // Priority
       &htask2,    // handle
       0           // CPU
+  );
+
+  xTaskCreatePinnedToCore(
+      Task_handle_ADE9078_Code, // Task function
+      "Task_ADE9078",           // Name
+      3000,                     // Stack size
+      nullptr,                  // Parameters
+      1,                        // Priority
+      &Task_handleADE9078,      // handle
+      0                         // CPU
   );
 }
 
@@ -318,6 +330,20 @@ void TCPhandler(void)
   else if (st == 0x13) // SOCK_Init
   {
     listen(6);
+  }
+}
+
+void Task_handle_ADE9078_Code(void *arg)
+{
+  log_i("Spustam Tas ADE90781");
+  ADE9078_init();
+  log_i("Nacitane Signature ADE9078 ma byt podla PDF 0x40, ale aj v AWTools vraca 0x80: %X", ADE9078_GetVersion());
+  log_i("Nacitane Register PSM2_CFG ma byt 0x1F:: %X", ADE9078_Rd_u16(ADDR_PSM2_CFG));
+  log_i("Nacitane Register CONFIG 5 ma byt 0x63: %X", ADE9078_Rd_u16(ADDR_CONFIG5));
+  while (1)
+  {
+
+    delay(10);
   }
 }
 
