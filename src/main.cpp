@@ -335,15 +335,35 @@ void TCPhandler(void)
 
 void Task_handle_ADE9078_Code(void *arg)
 {
+
   log_i("Spustam Tas ADE90781");
   ADE9078_init();
   log_i("Nacitane Signature ADE9078 ma byt podla PDF 0x40, ale aj v AWTools vraca 0x80: %X", ADE9078_GetVersion());
   log_i("Nacitane Register PSM2_CFG ma byt 0x1F:: %X", ADE9078_Rd_u16(ADDR_PSM2_CFG));
   log_i("Nacitane Register CONFIG 5 ma byt 0x63: %X", ADE9078_Rd_u16(ADDR_CONFIG5));
+
+  meranie.pocet_samplu = 1; // pozor na deleni nulu!!!
+  meranie.U1avg = meranie.U1avg = 0;
+  meranie.U2avg = meranie.U2avg = 0;
+  meranie.U3avg = meranie.U3avg = 0;
+  meranie.I1avg = meranie.I1avg = 0;
+  meranie.I2avg = meranie.I2avg = 0;
+  meranie.I3avg = meranie.I3avg = 0;
+  uint16_t verzeADEcipu;
+  verzeADEcipu = ADE9078_Rd_u16(ADDR_RUN);
+  ADE9078_Wr16(ADDR_RUN, 1);
+  delay(100);
+  verzeADEcipu = ADE9078_Rd_u16(ADDR_RUN);
+  delay(100);
+
   while (1)
   {
+    meranie.U1 = ADE9078_Rd_u32(ADDR_AVRMS);
+    meranie.U1 /= DelPomer_U;
+    log_i("Nacitane meranie.U1: %4.2f", meranie.U1);
+    log_i("Nacitane Reg32 a to ADDR_AVRMS je: %lu", ADE9078_Rd_u32(ADDR_AVRMS));
 
-    delay(10);
+    delay(1000);
   }
 }
 
@@ -366,7 +386,7 @@ void t2_ethTask(void *arg)
 
   while (1)
   {
-    // log_i("Task 2 loop");
-    delay(500);
+    log_i("RTOS free HeAP:%d", xPortGetFreeHeapSize());
+    delay(5000);
   }
 }

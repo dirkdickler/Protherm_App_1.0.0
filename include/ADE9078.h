@@ -2,10 +2,15 @@
 #define _ADE9078_H_
 
 #include "Pin_assigment.h"
+#include "constants.h"
 //#include "define.h"
 
 #define ADE9078_CS_LOW()	          digitalWrite(ADE9078_CS, LOW); 
 #define	ADE9078_CS_HIGH()	          digitalWrite(ADE9078_CS, HIGH); 
+
+#define DelPomer_U 54980.872727f
+#define DelPomer_I 490025.0f
+
 
 //function prototype
 void ADE9078_init(void);
@@ -639,6 +644,67 @@ uint16_t ADE9078_chksum_calc ( uint8_t reg_from,  uint8_t kolko_registru);
 #define Register_32							0x04
 #define Register_16							0x02
 
+
+typedef struct //
+{
+	float Teplota;
+	float Freq;
+
+	float U1;
+	float U2;
+	float U3;
+	float I1;
+	float I2;
+	float I3;
+	float Ang_a;
+	float Ang_b;
+	float Ang_c;
+	float vykonP1;
+	float vykonP2;
+	float vykonP3;
+	float vykonPtot;
+
+	float vykonQ1;
+	float vykonQ2;
+	float vykonQ3;
+	float vykonQtot;
+
+	float vykonS1;
+	float vykonS2;
+	float vykonS3;
+	float vykonStot;
+	float EnergyP;
+	float EnergyS;
+	float EnergyQ;
+	
+
+	float PwF_1;
+	float PwF_2;
+	float PwF_3;
+	float U1min;
+	float U2min;
+	float U3min;
+	float I1min;
+	float I2min;
+	float I3min;
+	float U1max;
+	float U2max;
+	float U3max;
+	float I1max;
+	float I2max;
+	float I3max;
+	float U1avg;
+	float U2avg;
+	float U3avg;
+	float I1avg;
+	float I2avg;
+	float I3avg;
+
+	u16 pocet_samplu; 
+
+} MERANIE_t;
+
+extern MERANIE_t meranie;
 
 #endif
 

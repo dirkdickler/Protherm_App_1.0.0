@@ -13,6 +13,8 @@
 SPIClass ADE_spi(HSPI);
 SPISettings ADE_SPI_settings(1000000, MSBFIRST, SPI_MODE3);
 
+MERANIE_t meranie;
+
 void ADE9078_init(void)
 {
 	log_i("ADE9078 inicializujem..");
