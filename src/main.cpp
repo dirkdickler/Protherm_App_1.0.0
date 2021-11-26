@@ -49,6 +49,7 @@ uint16_t citac = 0;
 void Loop_10ms()
 {
   citac++;
+  citac++;
 }
 
 void handleNotFound()
