@@ -36,13 +36,14 @@ IPAddress subnet(255, 255, 255, 0);
 IPAddress primaryDNS(8, 8, 8, 8);   // optional
 IPAddress secondaryDNS(8, 8, 4, 4); // optional
 
-EthernetWebServer server(80);
+EthernetWebServer server(8080);
 
 char NazovSiete[30];
 char Heslo[30];
 
 Ticker timer_10ms(Loop_10ms, 100, 0, MILLIS);
-JSONVar myObject;
+static JSONVar myObject;
+static String jsonString;
 
 uint16_t citac = 0;
 ; // int reqCount = 0; // number of requests received
@@ -186,12 +187,12 @@ void setup(void)
 {
 
   Serial.begin(115200);
-  Serial.println("Spustam applikaciu...Y 9");
+  Serial.println("Spustam applikaciu...Y 11");
   System_init();
   // NacitajSuborzSD();
 
   NacitajEEPROM_setting();
-  FuncServer_On();
+  // FuncServer_On();
 
   server.begin();
 
@@ -217,7 +218,7 @@ void setup(void)
   xTaskCreatePinnedToCore(
       t1_MAIN, // Task function
       "task1", // Name
-      3000,    // Stack size
+      13000,   // Stack size
       nullptr, // Parameters
       1,       // Priority
       &htask1, // handle
@@ -227,7 +228,7 @@ void setup(void)
   xTaskCreatePinnedToCore(
       t2_ethTask, // Task function
       "task2",    // Name
-      3000,       // Stack size
+      13000,      // Stack size
       nullptr,    // Parameters
       1,          // Priority
       &htask2,    // handle
@@ -237,7 +238,7 @@ void setup(void)
   xTaskCreatePinnedToCore(
       Task_handle_ADE9078_Code, // Task function
       "Task_ADE9078",           // Name
-      3000,                     // Stack size
+      13000,                    // Stack size
       nullptr,                  // Parameters
       1,                        // Priority
       &Task_handleADE9078,      // handle
@@ -250,8 +251,8 @@ void loop(void)
   esp_task_wdt_reset();
   // runner.execute();
   timer_10ms.update();
-  server.handleClient();
-  TCPhandler();
+  // server.handleClient();
+
   delay(5);
 }
 
@@ -288,12 +289,12 @@ void FuncServer_On(void)
 
   server.on("/get", HTTP_GET, []()
             { 
-              Serial.println("ajax pozadavek ze stranek");
+              //Serial.println("ajax pozadavek ze stranek");
 
       myObject["hello"] = String(citac);
   
-        String jsonString = JSON.stringify(myObject);	
-              server.send(200, F("text/html"), jsonString); });
+      jsonString = JSON.stringify(myObject);	
+      server.send(200, F("text/html"), jsonString); });
 
   server.serveStatic("/aaa", SD, "/aaa.txt"); // https://randomnerdtutorials.com/esp32-web-server-microsd-card/
   // server.onNotFound(handleNotFound);
@@ -303,6 +304,7 @@ void FuncServer_On(void)
 uint8_t TX_BUF[2500];
 void TCPhandler(void)
 {
+  char loc_buff[200];
   uint8_t st = w5500.readSnSR(6);
   if (st == 0x17) // establiset
   {
@@ -310,12 +312,35 @@ void TCPhandler(void)
     size = w5500.getRXReceivedSize(6);
     if (size > 0)
     {
-      ET_LOGWARN1(F("Tcp 1 handler dostal:"), size);
+      // log_i("TCP handler dostal:%u", size);
       memset(TX_BUF, 0, 2500);
       recv(6, TX_BUF, size);
-      Serial.print(F("\r\nA to : "));
-      Serial.println((char *)TX_BUF);
-      // disconnect(7);
+      // Serial.print(F("\r\nA to : "));
+      // Serial.println((char *)TX_BUF);
+      //  disconnect(7);
+      if (!strncmp((char *)TX_BUF, "GET /hlavne", 11) || !strncmp((char *)TX_BUF, "get /hlavne", 11))
+      {
+        log_i("Super stranky zadaju HLAVNE");
+        zobraz_stranky(page_hlavne);
+      }
+      else if (!strncmp((char *)TX_BUF, "GET /main", 9) || !strncmp((char *)TX_BUF, "get /main", 9))
+      {
+        log_i("Super stranky zadaju MAIN");
+        zobraz_stranky(DebugLog_html);
+      }
+      else if (!strncmp((char *)TX_BUF, "GET /get?", 9) || !strncmp((char *)TX_BUF, "get /get?", 9))
+      {
+        // log_i("Super stranky zadaju GEY AJAX s det?");
+
+        myObject["hello"] = String(citac);
+
+        jsonString = JSON.stringify(myObject);
+        jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
+        zobraz_stranky((const char *)TX_BUF);
+      }
+
+      delay(100);
+      disconnect(6);
     }
   }
 
@@ -325,7 +350,7 @@ void TCPhandler(void)
   }
   else if (st == 0x00) // SOCK_CLOSED
   {
-    socket(6, 1, 10001, 0x00);
+    socket(6, 1, 80, 0x00);
   }
   else if (st == 0x13) // SOCK_Init
   {
@@ -360,8 +385,8 @@ void Task_handle_ADE9078_Code(void *arg)
   {
     meranie.U1 = ADE9078_Rd_u32(ADDR_AVRMS);
     meranie.U1 /= DelPomer_U;
-    log_i("Nacitane meranie.U1: %4.2f", meranie.U1);
-    log_i("Nacitane Reg32 a to ADDR_AVRMS je: %lu", ADE9078_Rd_u32(ADDR_AVRMS));
+    // log_i("Nacitane meranie.U1: %4.2f", meranie.U1);
+    // log_i("Nacitane Reg32 a to ADDR_AVRMS je: %lu", ADE9078_Rd_u32(ADDR_AVRMS));
 
     delay(1000);
   }
@@ -370,9 +395,14 @@ void Task_handle_ADE9078_Code(void *arg)
 void t1_MAIN(void *arg)
 {
   log_i("Spustam Task1");
+
+  FuncServer_On();
+
   while (1)
   {
     UDPhandler();
+    server.handleClient();
+    TCPhandler();
     // log_i("Task 1 loop");
     delay(10);
   }
@@ -386,7 +416,48 @@ void t2_ethTask(void *arg)
 
   while (1)
   {
+    // ESP.getFreeHeap()
     log_i("RTOS free HeAP:%d", xPortGetFreeHeapSize());
     delay(5000);
   }
+}
+
+void zobraz_stranky(const char *ptrNaStranky)
+{
+  char locBuff[2048];
+  uint32_t index = 0;
+
+  // log_i("Stranky maju delku %u", strlen(ptrNaStranky)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
+
+  sprintf(locBuff, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %u\r\nConnection: close\r\n\r\n", strlen((char *)ptrNaStranky));
+  send(6, (u8 *)locBuff, strlen((char *)locBuff));
+
+  memset(locBuff, 0, sizeof(locBuff));
+  u32 kolkoPoslnaych = 0;
+  u32 velkostStranek = strlen(ptrNaStranky);
+  do
+  {
+    if (velkostStranek < 1000)
+    {
+      memcpy(locBuff, &ptrNaStranky[kolkoPoslnaych], velkostStranek);
+      send(6, (u8 *)locBuff, velkostStranek);
+      kolkoPoslnaych = velkostStranek;
+    }
+    else
+    {
+      u32 zostava = velkostStranek - kolkoPoslnaych;
+      if (zostava < 1000)
+      {
+        memcpy(locBuff, &ptrNaStranky[kolkoPoslnaych], zostava);
+        send(6, (u8 *)locBuff, zostava);
+        kolkoPoslnaych += zostava;
+      }
+      else
+      {
+        memcpy(locBuff, &ptrNaStranky[kolkoPoslnaych], 1000);
+        send(6, (u8 *)locBuff, 1000);
+        kolkoPoslnaych += 1000;
+      }
+    }
+  } while (kolkoPoslnaych < velkostStranek);
 }

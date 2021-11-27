@@ -106,7 +106,7 @@ extern IPAddress secondaryDNS;
 //extern wiz_NetInfo eth;
 extern SPIClass SDSPI;
 extern ESP32Time rtc;
-extern JSONVar myObject, myObject2, ObjDatumCas, ObjTopeni, JSON_DebugMsg;
+extern JSONVar myObject2, ObjDatumCas, ObjTopeni, JSON_DebugMsg;
 extern LOGBUFF_t LogBuffer;
 extern bool Internet_CasDostupny;
 extern bool RTC_cas_OK;
@@ -141,5 +141,5 @@ void Task_handle_ADE9078_Code(void *arg);
 void getdata();
 void returnOK();
 void TCPhandler(void);
-
+void zobraz_stranky( const char *ptrNaStranky);
 #endif
