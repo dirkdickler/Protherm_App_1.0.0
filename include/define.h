@@ -1,7 +1,7 @@
 ﻿#ifndef INC_DEFINE_H
 #define INC_DEFINE_H
 
-#define ETHERNET3_pocet_SOCK_NUM 8 // USE_ETHERNET3  Use  MAX_SOCK_NUM = 4 for 4K, 2 for 8K, 1 for 16K RX/TX buffer
+#define ETHERNET3_pocet_SOCK_NUM 6 // USE_ETHERNET3  Use  MAX_SOCK_NUM = 4 for 4K, 2 for 8K, 1 for 16K RX/TX buffer
 #define WDT_TIMEOUT 5
 
 #define input1 0

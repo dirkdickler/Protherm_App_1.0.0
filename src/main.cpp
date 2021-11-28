@@ -302,7 +302,7 @@ void FuncServer_On(void)
 }
 
 uint8_t TX_BUF[2500];
-void TCPhandler(void)
+void WebServerHandler(void)
 {
   char loc_buff[200];
   uint8_t st = w5500.readSnSR(6);
@@ -312,7 +312,7 @@ void TCPhandler(void)
     size = w5500.getRXReceivedSize(6);
     if (size > 0)
     {
-      // log_i("TCP handler dostal:%u", size);
+      // log_i("WebServer handler dostal:%u", size);
       memset(TX_BUF, 0, 2500);
       recv(6, TX_BUF, size);
       // Serial.print(F("\r\nA to : "));
@@ -355,6 +355,49 @@ void TCPhandler(void)
   else if (st == 0x13) // SOCK_Init
   {
     listen(6);
+  }
+}
+
+void TCP_handler(void)
+{
+  char loc_buff[200];
+  uint8_t st = w5500.readSnSR(7);
+  if (st == 0x17) // establiset
+  {
+    uint16_t size;
+    size = w5500.getRXReceivedSize(7);
+    if (size > 0)
+    {
+      log_i("TCP handler dostal:%u", size);
+      memset(TX_BUF, 0, 2500);
+      recv(7, TX_BUF, size);
+      // Serial.print(F("\r\nA to : "));
+      // Serial.println((char *)TX_BUF);
+      //  disconnect(7);
+      if (!strncmp((char *)TX_BUF, "GET /hlavne", 11) || !strncmp((char *)TX_BUF, "get /hlavne", 11))
+      {
+        log_i("Super stranky zadaju HLAVNE");
+        //zobraz_stranky(page_hlavne);
+      }
+      else if (!strncmp((char *)TX_BUF, "GET /main", 9) || !strncmp((char *)TX_BUF, "get /main", 9))
+      {
+        log_i("Super stranky zadaju MAIN");
+        //zobraz_stranky(DebugLog_html);
+      }
+    }
+  }
+
+  else if (st == 0x1c) // SOCK_CLOSE_WAIT
+  {
+    disconnect(7);
+  }
+  else if (st == 0x00) // SOCK_CLOSED
+  {
+    socket(7, 1, 10001, 0x00);
+  }
+  else if (st == 0x13) // SOCK_Init
+  {
+    listen(7);
   }
 }
 
@@ -402,7 +445,8 @@ void t1_MAIN(void *arg)
   {
     UDPhandler();
     server.handleClient();
-    TCPhandler();
+    WebServerHandler();
+    TCP_handler();
     // log_i("Task 1 loop");
     delay(10);
   }

@@ -140,6 +140,7 @@ void Task_handle_ADE9078_Code(void *arg);
 
 void getdata();
 void returnOK();
-void TCPhandler(void);
+void WebServerHandler(void);
+void TCP_handler(void);
 void zobraz_stranky( const char *ptrNaStranky);
 #endif
