@@ -377,12 +377,12 @@ void TCP_handler(void)
       if (!strncmp((char *)TX_BUF, "GET /hlavne", 11) || !strncmp((char *)TX_BUF, "get /hlavne", 11))
       {
         log_i("Super stranky zadaju HLAVNE");
-        //zobraz_stranky(page_hlavne);
+        // zobraz_stranky(page_hlavne);
       }
       else if (!strncmp((char *)TX_BUF, "GET /main", 9) || !strncmp((char *)TX_BUF, "get /main", 9))
       {
         log_i("Super stranky zadaju MAIN");
-        //zobraz_stranky(DebugLog_html);
+        // zobraz_stranky(DebugLog_html);
       }
     }
   }
