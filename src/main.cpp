@@ -359,7 +359,7 @@ void WebServerHandler(void)
   }
 }
 
-void TCP_handler(void)
+void TCP_handler(u8 s)
 {
   char loc_buff[200];
   uint8_t st = w5500.readSnSR(7);
@@ -385,20 +385,59 @@ void TCP_handler(void)
         log_i("Super stranky zadaju MAIN");
         // zobraz_stranky(DebugLog_html);
       }
+      else if (!strncmp((const char *)TX_BUF, "Energy_calib", 12))
+      {
+        //Energy_calib$10$00$b5$ff$10$00$b5$ff$10$00$b5$ff$10$00$00$00$10$00$00$00$10$00$00$00$01$11$09$00$10$11$09$00$10$11$09$00$10$00$00$00$10$00$00$00$10$00$00$00   //tato dava z hruba z 238V na 230V
+				//Energy_calib$10$00$db$ff$10$00$db$ff$10$00$db$ff$10$00$00$00$10$00$00$00$10$00$00$00$01$11$09$00$10$11$09$00$10$11$09$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato dava z hruba z 234V na 230V
+				//Energy_calib$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato veta dava skoro na nulu ako DEfault
+				//Energy_calib$10$00$2e$00$10$00$2e$00$10$00$2e$00$10$00$00$00$10$00$00$00$10$00$00$00$01$11$2f$00$10$11$2f$00$10$11$2f$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato dava z hruba z 224V na 230V  a pruz z 4,90A na 5A
+				//Energy_calib$00$00$32$02$11$00$32$02$11$00$32$02$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato veta dava skoro na nulu ako DEfault - ale pre jednotku co maju DElic 3x 330k
+        EEPROM.writeLong(EE_Vin_gain_1, *(i32 *)&TX_BUF[12]);
+        EEPROM.writeLong(EE_Vin_gain_2, *(i32 *)&TX_BUF[16]);
+        EEPROM.writeLong(EE_Vin_gain_3, *(i32 *)&TX_BUF[20]);
+        EEPROM.writeLong(EE_Vin_offset_1, *(i32 *)&TX_BUF[24]);
+        EEPROM.writeLong(EE_Vin_offset_2, *(i32 *)&TX_BUF[28]);
+        EEPROM.writeLong(EE_Vin_offset_3, *(i32 *)&TX_BUF[32]);
+        EEPROM.writeLong(EE_Iin_gain_1, *(i32 *)&TX_BUF[36]);
+        EEPROM.writeLong(EE_Iin_gain_2, *(i32 *)&TX_BUF[40]);
+        EEPROM.writeLong(EE_Iin_gain_3, *(i32 *)&TX_BUF[44]);
+        EEPROM.writeLong(EE_Iin_offset_1, *(i32 *)&TX_BUF[48]);
+        EEPROM.writeLong(EE_Iin_offset_2, *(i32 *)&TX_BUF[52]);
+        EEPROM.writeLong(EE_Iin_offset_3, *(i32 *)&TX_BUF[56]);
+
+        EEPROM.commit();
+
+        ADE9078_Wr32(ADDR_AVGAIN, EEPROM.readLong(EE_Vin_gain_1));
+        ADE9078_Wr32(ADDR_BVGAIN, EEPROM.readLong(EE_Vin_gain_2));
+        ADE9078_Wr32(ADDR_CVGAIN, EEPROM.readLong(EE_Vin_gain_3));
+        ADE9078_Wr32(ADDR_AVRMSOS, EEPROM.readLong(EE_Vin_offset_1));
+        ADE9078_Wr32(ADDR_BVRMSOS, EEPROM.readLong(EE_Vin_offset_2));
+        ADE9078_Wr32(ADDR_CVRMSOS, EEPROM.readLong(EE_Vin_offset_3));
+
+        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1));
+        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2));
+        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3));
+        ADE9078_Wr32(ADDR_AIRMSOS, EEPROM.readLong(EE_Iin_offset_1));
+        ADE9078_Wr32(ADDR_BIRMSOS, EEPROM.readLong(EE_Iin_offset_2));
+        ADE9078_Wr32(ADDR_CIRMSOS, EEPROM.readLong(EE_Iin_offset_3));
+
+        snprintf ((char *) TX_BUF, sizeof (TX_BUF), "\r\n*****DOSLO Energy_calib  !!!!");
+				send(s, TX_BUF, strlen((char*)TX_BUF));
+      }
     }
   }
 
   else if (st == 0x1c) // SOCK_CLOSE_WAIT
   {
-    disconnect(7);
+    disconnect(s);
   }
   else if (st == 0x00) // SOCK_CLOSED
   {
-    socket(7, 1, 10001, 0x00);
+    socket(s, 1, 10001, 0x00);
   }
   else if (st == 0x13) // SOCK_Init
   {
-    listen(7);
+    listen(s);
   }
 }
 
@@ -446,7 +485,7 @@ void Task_handle_ADE9078_Code(void *arg)
     meranie.U1 /= DelPomer_U;
     log_i("Nacitane meranie.U1: %4.2f", meranie.U1);
     log_i("Nacitane Reg32 a to ADDR_AVRMS je: %lu", ADE9078_Rd_u32(ADDR_AVRMS));
-    
+
     if (meranie.U1 > 50)
     {
 
@@ -497,7 +536,7 @@ void t1_MAIN(void *arg)
     UDPhandler();
     server.handleClient();
     WebServerHandler();
-    TCP_handler();
+    TCP_handler(7);
     // log_i("Task 1 loop");
     delay(10);
   }
