@@ -227,7 +227,15 @@ int8_t NacitajEEPROM_setting(void)
 
 	log_i("Succes to initialise EEPROM");
 
-	EEPROM.readBytes(EE_NazovSiete, NazovSiete, 16);
+	//EEPROM.writeString(EE_NazovSiete, "zadels\0");
+	//EEPROM.writeLong(EE_Vin_gain_1,123);
+	//EEPROM.commit();
+	//EEPROM.readString(EE_NazovSiete, NazovSiete, 16);
+	
+	String slovo;
+	slovo = String(EEPROM.readString(EE_NazovSiete));//, NazovSiete,16);//String(Ethernet.localIP());
+	log_i("EEPROM nazov siete je vycitane: %s", slovo);
+	//EEPROM.readBytes(EE_NazovSiete, NazovSiete, 16);
 
 	if (NazovSiete[0] != 0xff) // ak mas novy modul tak EEPROM vrati prazdne hodnoty, preto ich neprepisem z EEPROM, ale necham default
 	{
