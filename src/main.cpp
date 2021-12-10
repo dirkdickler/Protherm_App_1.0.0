@@ -303,31 +303,31 @@ void FuncServer_On(void)
 }
 
 uint8_t TX_BUF[2500];
-void WebServerHandler(void)
+void WebServerHandler(u8 s)
 {
   char loc_buff[200];
-  uint8_t st = w5500.readSnSR(6);
+  uint8_t st = w5500.readSnSR(s);
   if (st == 0x17) // establiset
   {
     uint16_t size;
-    size = w5500.getRXReceivedSize(6);
+    size = w5500.getRXReceivedSize(s);
     if (size > 0)
     {
       // log_i("WebServer handler dostal:%u", size);
       memset(TX_BUF, 0, 2500);
-      recv(6, TX_BUF, size);
+      recv(s, TX_BUF, size);
       // Serial.print(F("\r\nA to : "));
       // Serial.println((char *)TX_BUF);
       //  disconnect(7);
       if (!strncmp((char *)TX_BUF, "GET /hlavne", 11) || !strncmp((char *)TX_BUF, "get /hlavne", 11))
       {
         log_i("Super stranky zadaju HLAVNE");
-        zobraz_stranky(page_hlavne);
+        zobraz_stranky(s, page_hlavne);
       }
       else if (!strncmp((char *)TX_BUF, "GET /main", 9) || !strncmp((char *)TX_BUF, "get /main", 9))
       {
         log_i("Super stranky zadaju MAIN");
-        zobraz_stranky(DebugLog_html);
+        zobraz_stranky(s, DebugLog_html);
       }
       else if (!strncmp((char *)TX_BUF, "GET /get?", 9) || !strncmp((char *)TX_BUF, "get /get?", 9))
       {
@@ -337,11 +337,11 @@ void WebServerHandler(void)
 
         jsonString = JSON.stringify(myObject);
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
-        zobraz_stranky((const char *)TX_BUF);
+        zobraz_stranky(s, (const char *)TX_BUF);
       }
 
       delay(100);
-      disconnect(6);
+      disconnect(s);
     }
   }
 
@@ -387,11 +387,11 @@ void TCP_handler(u8 s)
       }
       else if (!strncmp((const char *)TX_BUF, "Energy_calib", 12))
       {
-        //Energy_calib$10$00$b5$ff$10$00$b5$ff$10$00$b5$ff$10$00$00$00$10$00$00$00$10$00$00$00$01$11$09$00$10$11$09$00$10$11$09$00$10$00$00$00$10$00$00$00$10$00$00$00   //tato dava z hruba z 238V na 230V
-				//Energy_calib$10$00$db$ff$10$00$db$ff$10$00$db$ff$10$00$00$00$10$00$00$00$10$00$00$00$01$11$09$00$10$11$09$00$10$11$09$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato dava z hruba z 234V na 230V
-				//Energy_calib$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato veta dava skoro na nulu ako DEfault
-				//Energy_calib$10$00$2e$00$10$00$2e$00$10$00$2e$00$10$00$00$00$10$00$00$00$10$00$00$00$01$11$2f$00$10$11$2f$00$10$11$2f$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato dava z hruba z 224V na 230V  a pruz z 4,90A na 5A
-				//Energy_calib$00$00$32$02$11$00$32$02$11$00$32$02$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato veta dava skoro na nulu ako DEfault - ale pre jednotku co maju DElic 3x 330k
+        // Energy_calib$10$00$b5$ff$10$00$b5$ff$10$00$b5$ff$10$00$00$00$10$00$00$00$10$00$00$00$01$11$09$00$10$11$09$00$10$11$09$00$10$00$00$00$10$00$00$00$10$00$00$00   //tato dava z hruba z 238V na 230V
+        // Energy_calib$10$00$db$ff$10$00$db$ff$10$00$db$ff$10$00$00$00$10$00$00$00$10$00$00$00$01$11$09$00$10$11$09$00$10$11$09$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato dava z hruba z 234V na 230V
+        // Energy_calib$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato veta dava skoro na nulu ako DEfault
+        // Energy_calib$10$00$2e$00$10$00$2e$00$10$00$2e$00$10$00$00$00$10$00$00$00$10$00$00$00$01$11$2f$00$10$11$2f$00$10$11$2f$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato dava z hruba z 224V na 230V  a pruz z 4,90A na 5A
+        // Energy_calib$00$00$32$02$11$00$32$02$11$00$32$02$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato veta dava skoro na nulu ako DEfault - ale pre jednotku co maju DElic 3x 330k
         EEPROM.writeLong(EE_Vin_gain_1, *(i32 *)&TX_BUF[12]);
         EEPROM.writeLong(EE_Vin_gain_2, *(i32 *)&TX_BUF[16]);
         EEPROM.writeLong(EE_Vin_gain_3, *(i32 *)&TX_BUF[20]);
@@ -421,8 +421,8 @@ void TCP_handler(u8 s)
         ADE9078_Wr32(ADDR_BIRMSOS, EEPROM.readLong(EE_Iin_offset_2));
         ADE9078_Wr32(ADDR_CIRMSOS, EEPROM.readLong(EE_Iin_offset_3));
 
-        snprintf ((char *) TX_BUF, sizeof (TX_BUF), "\r\n*****DOSLO Energy_calib  !!!!");
-				send(s, TX_BUF, strlen((char*)TX_BUF));
+        snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO Energy_calib  !!!!");
+        send(s, TX_BUF, strlen((char *)TX_BUF));
       }
     }
   }
@@ -535,7 +535,9 @@ void t1_MAIN(void *arg)
   {
     UDPhandler();
     server.handleClient();
-    WebServerHandler();
+
+    WebServerHandler(6);
+    
     TCP_handler(7);
     // log_i("Task 1 loop");
     delay(10);
@@ -556,7 +558,7 @@ void t2_ethTask(void *arg)
   }
 }
 
-void zobraz_stranky(const char *ptrNaStranky)
+void zobraz_stranky(u8 socket, const char *ptrNaStranky)
 {
   char locBuff[2048];
   uint32_t index = 0;
@@ -564,7 +566,7 @@ void zobraz_stranky(const char *ptrNaStranky)
   // log_i("Stranky maju delku %u", strlen(ptrNaStranky)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
 
   snprintf(locBuff, sizeof(locBuff), "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %u\r\nConnection: close\r\n\r\n", strlen((char *)ptrNaStranky));
-  send(6, (u8 *)locBuff, strlen((char *)locBuff));
+  send(socket, (u8 *)locBuff, strlen((char *)locBuff));
 
   memset(locBuff, 0, sizeof(locBuff));
   u32 kolkoPoslnaych = 0;
@@ -574,7 +576,7 @@ void zobraz_stranky(const char *ptrNaStranky)
     if (velkostStranek < 1000)
     {
       memcpy(locBuff, &ptrNaStranky[kolkoPoslnaych], velkostStranek);
-      send(6, (u8 *)locBuff, velkostStranek);
+      send(socket, (u8 *)locBuff, velkostStranek);
       kolkoPoslnaych = velkostStranek;
     }
     else
@@ -583,13 +585,13 @@ void zobraz_stranky(const char *ptrNaStranky)
       if (zostava < 1000)
       {
         memcpy(locBuff, &ptrNaStranky[kolkoPoslnaych], zostava);
-        send(6, (u8 *)locBuff, zostava);
+        send(socket, (u8 *)locBuff, zostava);
         kolkoPoslnaych += zostava;
       }
       else
       {
         memcpy(locBuff, &ptrNaStranky[kolkoPoslnaych], 1000);
-        send(6, (u8 *)locBuff, 1000);
+        send(socket, (u8 *)locBuff, 1000);
         kolkoPoslnaych += 1000;
       }
     }
