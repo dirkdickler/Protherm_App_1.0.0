@@ -27,6 +27,19 @@
 #define EE_citacZapisuDoEEPORM 84   // 2bytes
 #define EE_citac2_ZapisuDoEEPORM 86 // 2bytes
 #define EE_dalsi 88
+#define EE_Vin_offset_1          100  //4bytes
+#define EE_Vin_gain_1            104  //4bytes
+#define EE_Vin_offset_2          108  //4bytes
+#define EE_Vin_gain_2            112  //4bytes
+#define EE_Vin_offset_3          116  //4bytes
+#define EE_Vin_gain_3            120  //4bytes
+#define EE_Iin_offset_1          124  //4bytes
+#define EE_Iin_gain_1            128  //4bytes
+#define EE_Iin_offset_2          132  //4bytes
+#define EE_Iin_gain_2            136  //4bytes
+#define EE_Iin_offset_3          140  //4bytes
+#define EE_Iin_gain_3            144  //4bytes
+
 #define EE_zacateKaret_1 200
 #define EE_zacateKaret_2 1300 // EE_zacateKaret + 100*11tj 1300
 

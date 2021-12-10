@@ -10,6 +10,7 @@
 #include <Ticker.h>
 #include "index.html"
 #include <Arduino_JSON.h>
+#include <EEPROM.h>
 #include "main.h"
 #include "constants.h"
 #include "HelpFunction.h"
@@ -238,7 +239,7 @@ void setup(void)
   xTaskCreatePinnedToCore(
       Task_handle_ADE9078_Code, // Task function
       "Task_ADE9078",           // Name
-      13000,                    // Stack size
+      3000,                     // Stack size
       nullptr,                  // Parameters
       1,                        // Priority
       &Task_handleADE9078,      // handle
@@ -252,7 +253,7 @@ void loop(void)
   // runner.execute();
   timer_10ms.update();
   // server.handleClient();
-  
+
   delay(5);
 }
 
@@ -404,7 +405,7 @@ void TCP_handler(void)
 void Task_handle_ADE9078_Code(void *arg)
 {
 
-  log_i("Spustam Tas ADE90781");
+  log_i("Spustam Task ADE9078");
   ADE9078_init();
   log_i("Nacitane Signature ADE9078 ma byt podla PDF 0x40, ale aj v AWTools vraca 0x80: %X", ADE9078_GetVersion());
   log_i("Nacitane Register PSM2_CFG ma byt 0x1F:: %X", ADE9078_Rd_u16(ADDR_PSM2_CFG));
@@ -424,12 +425,62 @@ void Task_handle_ADE9078_Code(void *arg)
   verzeADEcipu = ADE9078_Rd_u16(ADDR_RUN);
   delay(100);
 
+  log_i("Nacitane i32 z adrese EE_Vin_gain_1 :%li", EEPROM.readLong(EE_Vin_gain_1));
+  ADE9078_Wr32(ADDR_AVGAIN, EEPROM.readLong(EE_Vin_gain_1));
+  ADE9078_Wr32(ADDR_BVGAIN, EEPROM.readLong(EE_Vin_gain_2));
+  ADE9078_Wr32(ADDR_CVGAIN, EEPROM.readLong(EE_Vin_gain_3));
+  ADE9078_Wr32(ADDR_AVRMSOS, EEPROM.readLong(EE_Vin_offset_1));
+  ADE9078_Wr32(ADDR_BVRMSOS, EEPROM.readLong(EE_Vin_offset_2));
+  ADE9078_Wr32(ADDR_CVRMSOS, EEPROM.readLong(EE_Vin_offset_3));
+
+  ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1));
+  ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2));
+  ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3));
+  ADE9078_Wr32(ADDR_AIRMSOS, EEPROM.readLong(EE_Iin_offset_1));
+  ADE9078_Wr32(ADDR_BIRMSOS, EEPROM.readLong(EE_Iin_offset_2));
+  ADE9078_Wr32(ADDR_CIRMSOS, EEPROM.readLong(EE_Iin_offset_3));
+
   while (1)
   {
     meranie.U1 = ADE9078_Rd_u32(ADDR_AVRMS);
     meranie.U1 /= DelPomer_U;
-    // log_i("Nacitane meranie.U1: %4.2f", meranie.U1);
-    // log_i("Nacitane Reg32 a to ADDR_AVRMS je: %lu", ADE9078_Rd_u32(ADDR_AVRMS));
+    log_i("Nacitane meranie.U1: %4.2f", meranie.U1);
+    log_i("Nacitane Reg32 a to ADDR_AVRMS je: %lu", ADE9078_Rd_u32(ADDR_AVRMS));
+    
+    if (meranie.U1 > 50)
+    {
+
+      meranie.U2 = ADE9078_Rd_u32(ADDR_BVRMS);
+      meranie.U2 /= DelPomer_U;
+      meranie.U3 = ADE9078_Rd_u32(ADDR_CVRMS);
+      meranie.U3 /= DelPomer_U;
+
+      meranie.I1 = ADE9078_Rd_u32(ADDR_AIRMS);
+      meranie.I1 /= DelPomer_I;
+      meranie.I2 = ADE9078_Rd_u32(ADDR_BIRMS);
+      meranie.I2 /= DelPomer_I;
+      meranie.I3 = ADE9078_Rd_u32(ADDR_CIRMS);
+      meranie.I3 /= DelPomer_I;
+
+      meranie.Ang_a = (float)ADE9078_Rd_u16(ADDR_ANGL_VA_IA);
+      meranie.Ang_a *= 0.03515625f;
+      meranie.Ang_b = (float)ADE9078_Rd_u16(ADDR_ANGL_VB_IB);
+      meranie.Ang_b *= 0.03515625f;
+      meranie.Ang_c = (float)ADE9078_Rd_u16(ADDR_ANGL_VC_IC);
+      meranie.Ang_c *= 0.03515625f;
+      meranie.Freq = ADE9078_Rd_u32(ADDR_APERIOD);
+      meranie.Freq /= 104857.24f;
+    }
+    else
+    {
+      meranie.U1 = meranie.U2 = meranie.U3 = meranie.I1 = meranie.I2 = meranie.I3 = 0;
+      meranie.Ang_a = meranie.Ang_b = meranie.Ang_c = 0;
+
+      meranie.vykonP1 = meranie.vykonP2 = meranie.vykonP3 = 0;
+      meranie.vykonQ1 = meranie.vykonQ2 = meranie.vykonQ3 = 0;
+      meranie.vykonS1 = meranie.vykonS2 = meranie.vykonS3 = 0;
+      meranie.Freq = 0;
+    }
 
     delay(1000);
   }
@@ -452,7 +503,7 @@ void t1_MAIN(void *arg)
   }
 }
 
-static EthernetWebServer serverr(8080);
+// static EthernetWebServer serverr(8080);
 void t2_ethTask(void *arg)
 {
 
@@ -473,7 +524,7 @@ void zobraz_stranky(const char *ptrNaStranky)
 
   // log_i("Stranky maju delku %u", strlen(ptrNaStranky)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
 
-  sprintf(locBuff, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %u\r\nConnection: close\r\n\r\n", strlen((char *)ptrNaStranky));
+  snprintf(locBuff, sizeof(locBuff), "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %u\r\nConnection: close\r\n\r\n", strlen((char *)ptrNaStranky));
   send(6, (u8 *)locBuff, strlen((char *)locBuff));
 
   memset(locBuff, 0, sizeof(locBuff));
