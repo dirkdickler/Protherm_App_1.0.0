@@ -23,7 +23,7 @@ char ReplyBuffer[] = "000102030405 ProthermEnergy";       // a string to send ba
 
 void System_init(void)
 {
-	Serial.println("Nastavujem DEBUG LOGs  priklady v pliformIO ini musis mat nastavene nejaku uroven -DCORE_DEBUG_LEVEL=5 ");
+	Serial.println("Nastavujem DEBUG LOGs  priklady v pliaformIO ini musis mat nastavene nejaku uroven -DCORE_DEBUG_LEVEL=5 ");
 	log_i("Zacatek funkcie..");
 	// ESP_LOGD("EXAMPLE", "This doesn't show");
 	// ESP_LOGI("","Func:System_init  begin..");
@@ -232,6 +232,8 @@ int8_t NacitajEEPROM_setting(void)
 	//EEPROM.commit();
 	//EEPROM.readString(EE_NazovSiete, NazovSiete, 16);
 	
+	log_i("EEPROM nacitany rozsah: %u", EEPROM.readByte(EE_rozsah_Prud));
+    
 	String slovo;
 	slovo = String(EEPROM.readString(EE_NazovSiete));//, NazovSiete,16);//String(Ethernet.localIP());
 	log_i("EEPROM nazov siete je vycitane: %s", slovo);

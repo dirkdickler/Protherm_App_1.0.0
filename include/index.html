@@ -436,6 +436,7 @@
           document.getElementById("Prud1").textContent = "12,87 A";
           document.getElementById("Prud2").textContent = "132,87 A";
           document.getElementById("Prud3").textContent = "14,87 A";
+          window.location.assign("/meraj20A");
         }
         else if (rt == 2) {
           console.log('My func 2');
@@ -498,6 +499,506 @@
           (50A)</button></p>
       <p><button onclick="myFunction(4)" id='button4' class="fixedbtn"
           style="margin: 740px 10px 0px 10px;">Meranie<br>3x400V
+          (100A)</button></p>
+
+      <p><button onclick="myFunction(5)" id='button5' class="malybtn"
+          style="margin: 970px 10px 0px 10px;">Refres<br>stranky</button></p>
+
+      <div class="Text_faza_V" style="top: 100px; "><span id="Volt1">L1: ---</span></div>
+      <div class="Text_faza_V" style="top: 450px; "><span id="Volt2">L2: ---</span></div>
+      <div class="Text_faza_V" style="top: 810px; "><span id="Volt3">L3: ---</span></div>
+
+      <div class="Text_faza_V" style="top: 100px; left: 1320px;"><span id="Prud1">---</span></div>
+      <div class="Text_faza_V" style="top: 450px; left: 1320px;"><span id="Prud2">---</span></div>
+      <div class="Text_faza_V" style="top: 810px; left: 1320px;"><span id="Prud3">---</span></div>
+    </div>
+  </body>
+
+  </html>
+  )rawliteral";
+
+
+  const char page_rozsah_20A_1F[] = R"rawliteral(
+  <!DOCTYPE html>
+  <html>
+
+  <head>
+    <title>Meranie Rozsahu 20A 1 fáza</title>
+    <style>
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        margin: 0;
+        padding: 0;
+        background-color: green;
+      }
+
+      #container {
+        width: inherit;
+        height: inherit;
+        margin: 0;
+        padding: 0;
+        background-color: rgb(43, 42, 42);
+      }
+
+      h1 {
+        margin: 0;
+        padding: 0;
+      }
+
+
+      .fixedbtn {
+        position: fixed;
+        width: 18%;
+        height: 15%;
+        font-size: 23px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(255, 255, 255);
+      }
+
+      .malybtn {
+        position: fixed;
+        width: 9%;
+        height: 7%;
+        font-size: 18px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(255, 255, 255);
+      }
+
+      .Text_faza_V {
+        position: fixed;
+        font-size: 123px;
+        color: white;
+        left: 550px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+    </style>
+
+    <script>
+
+      function myFunction(rt) {
+
+        console.log('[myFunction (rt)] Button ma param:' + rt);
+
+        if (rt == 10) { console.log('My func 1 - odosielam OnOFF_Zavlahu'); websocket.send('OnOFF_Zavlahu'); }
+        else if (rt == 1) {
+          console.log('My func 1');
+          window.location.assign("/meraj20A_1F");
+        }
+        else if (rt == 2) {
+          console.log('My func 2');
+          window.location.assign("/meraj20A_3F");
+        }
+        else if (rt == 3) {
+          console.log('My func 3');
+          window.location.assign("/meraj50A_3F");
+        }
+        else if (rt == 4) {
+          console.log('My func 4');
+          window.location.assign("/meraj100A_3F");
+        }
+        else if (rt == 5) { window.location.assign("/hlavne"); }
+        else if (rt == 6) { window.location.assign("/NastavVentil?ventil=5"); }
+        else if (rt == 7) { window.location.assign("/NastavVentil?ventil=6"); }
+        else if (rt == 22) {
+          window.location.assign("/NastavVentil?param1=3");
+          //websocket.send ('ZaluzieZatvorVsetky');
+        }
+
+        else if (rt == 100) { window.location.assign("/"); }
+      }
+    </script>
+
+  </head>
+
+  <body>
+    <div id="container">
+      <!--<h1>Hello Worldf</h1>-->
+      <p><button onclick="myFunction(1)" id='button1' class="fixedbtn"
+          style="margin: 30px 00px 00px 10px; background-color: rgb(18, 224, 18); ">Meranie<br>1x230V
+          (20A)</button></p>
+      <p><button onclick="myFunction(2)" id='button2' class="fixedbtn"
+          style="margin: 270px 10px 0px 10px;">Meranie<br>3x400V
+          (20A)</button></p>
+      <p><button onclick="myFunction(3)" id='button3' class="fixedbtn"
+          style="margin: 500px 10px 0px 10px; ">Meranie<br>3x400V
+          (50A)</button></p>
+      <p><button onclick="myFunction(4)" id='button4' class="fixedbtn"
+          style="margin: 740px 10px 0px 10px;">Meranie<br>3x400V
+          (100A)</button></p>
+
+      <p><button onclick="myFunction(5)" id='button5' class="malybtn"
+          style="margin: 970px 10px 0px 10px;">Refres<br>stranky</button></p>
+
+      <div class="Text_faza_V" style="top: 100px; "><span id="Volt1">L1: ---</span></div>
+      <div class="Text_faza_V" style="top: 100px; left: 1320px;"><span id="Prud1">---</span></div>
+    </div>
+  </body>
+
+  </html>
+  )rawliteral";
+
+  const char page_rozsah_20A_3F[] = R"rawliteral(
+  <!DOCTYPE html>
+  <html>
+
+  <head>
+    <title>Meranie Rozsahu 20A 3 f</title>
+    <style>
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        margin: 0;
+        padding: 0;
+        background-color: green;
+      }
+
+      #container {
+        width: inherit;
+        height: inherit;
+        margin: 0;
+        padding: 0;
+        background-color: rgb(43, 42, 42);
+      }
+
+      h1 {
+        margin: 0;
+        padding: 0;
+      }
+
+
+      .fixedbtn {
+        position: fixed;
+        width: 18%;
+        height: 15%;
+        font-size: 23px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(255, 255, 255);
+      }
+
+      .malybtn {
+        position: fixed;
+        width: 9%;
+        height: 7%;
+        font-size: 18px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(255, 255, 255);
+      }
+
+      .Text_faza_V {
+        position: fixed;
+        font-size: 123px;
+        color: white;
+        left: 550px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+    </style>
+
+    <script>
+
+      function myFunction(rt) {
+
+        console.log('[myFunction (rt)] Button ma param:' + rt);
+
+        if (rt == 10) { console.log('My func 1 - odosielam OnOFF_Zavlahu'); websocket.send('OnOFF_Zavlahu'); }
+        else if (rt == 1) {
+          console.log('My func 1');
+          window.location.assign("/meraj20A_1F");
+        }
+        else if (rt == 2) {
+          console.log('My func 2');
+          window.location.assign("/meraj20A_3F");
+        }
+        else if (rt == 3) {
+          console.log('My func 3');
+          window.location.assign("/meraj50A_3F");
+        }
+        else if (rt == 4) {
+          console.log('My func 4');
+          window.location.assign("/meraj100A_3F");
+        }
+        else if (rt == 5) { window.location.assign("/hlavne"); }
+        else if (rt == 6) { window.location.assign("/NastavVentil?ventil=5"); }
+        else if (rt == 7) { window.location.assign("/NastavVentil?ventil=6"); }
+        else if (rt == 22) {
+          window.location.assign("/NastavVentil?param1=3");
+          //websocket.send ('ZaluzieZatvorVsetky');
+        }
+
+        else if (rt == 100) { window.location.assign("/"); }
+      }
+    </script>
+
+  </head>
+
+  <body>
+    <div id="container">
+      <!--<h1>Hello Worldf</h1>-->
+      <p><button onclick="myFunction(1)" id='button1' class="fixedbtn"
+          style="margin: 30px 00px 00px 10px;  ">Meranie<br>1x230V
+          (20A)</button></p>
+      <p><button onclick="myFunction(2)" id='button2' class="fixedbtn"
+          style="margin: 270px 10px 0px 10px; background-color: rgb(18, 224, 18); ">Meranie<br>3x400V
+          (20A)</button></p>
+      <p><button onclick="myFunction(3)" id='button3' class="fixedbtn"
+          style="margin: 500px 10px 0px 10px; ">Meranie<br>3x400V
+          (50A)</button></p>
+      <p><button onclick="myFunction(4)" id='button4' class="fixedbtn"
+          style="margin: 740px 10px 0px 10px;">Meranie<br>3x400V
+          (100A)</button></p>
+
+      <p><button onclick="myFunction(5)" id='button5' class="malybtn"
+          style="margin: 970px 10px 0px 10px;">Refres<br>stranky</button></p>
+
+      <div class="Text_faza_V" style="top: 100px; "><span id="Volt1">L1: ---</span></div>
+      <div class="Text_faza_V" style="top: 450px; "><span id="Volt2">L2: ---</span></div>
+      <div class="Text_faza_V" style="top: 810px; "><span id="Volt3">L3: ---</span></div>
+
+      <div class="Text_faza_V" style="top: 100px; left: 1320px;"><span id="Prud1">---</span></div>
+      <div class="Text_faza_V" style="top: 450px; left: 1320px;"><span id="Prud2">---</span></div>
+      <div class="Text_faza_V" style="top: 810px; left: 1320px;"><span id="Prud3">---</span></div>
+    </div>
+  </body>
+
+  </html>
+  )rawliteral";
+
+  const char page_rozsah_50A_3F[] = R"rawliteral(
+  <!DOCTYPE html>
+  <html>
+
+  <head>
+    <title>Meranie Rozsahu 50A 3 fáza</title>
+    <style>
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        margin: 0;
+        padding: 0;
+        background-color: green;
+      }
+
+      #container {
+        width: inherit;
+        height: inherit;
+        margin: 0;
+        padding: 0;
+        background-color: rgb(43, 42, 42);
+      }
+
+      h1 {
+        margin: 0;
+        padding: 0;
+      }
+
+
+      .fixedbtn {
+        position: fixed;
+        width: 18%;
+        height: 15%;
+        font-size: 23px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(255, 255, 255);
+      }
+
+      .malybtn {
+        position: fixed;
+        width: 9%;
+        height: 7%;
+        font-size: 18px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(255, 255, 255);
+      }
+
+      .Text_faza_V {
+        position: fixed;
+        font-size: 123px;
+        color: white;
+        left: 550px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+    </style>
+
+    <script>
+
+      function myFunction(rt) {
+
+        console.log('[myFunction (rt)] Button ma param:' + rt);
+
+        if (rt == 10) { console.log('My func 1 - odosielam OnOFF_Zavlahu'); websocket.send('OnOFF_Zavlahu'); }
+        else if (rt == 1) {
+          console.log('My func 1');
+          window.location.assign("/meraj20A_1F");
+        }
+        else if (rt == 2) {
+          console.log('My func 2');
+          window.location.assign("/meraj20A_3F");
+        }
+        else if (rt == 3) {
+          console.log('My func 3');
+          window.location.assign("/meraj50A_3F");
+        }
+        else if (rt == 4) {
+          console.log('My func 4');
+          window.location.assign("/meraj100A_3F");
+        }
+        else if (rt == 5) { window.location.assign("/hlavne"); }
+        else if (rt == 6) { window.location.assign("/NastavVentil?ventil=5"); }
+        else if (rt == 7) { window.location.assign("/NastavVentil?ventil=6"); }
+        else if (rt == 22) {
+          window.location.assign("/NastavVentil?param1=3");
+          //websocket.send ('ZaluzieZatvorVsetky');
+        }
+
+        else if (rt == 100) { window.location.assign("/"); }
+      }
+    </script>
+
+  </head>
+
+  <body>
+    <div id="container">
+      <!--<h1>Hello Worldf</h1>-->
+      <p><button onclick="myFunction(1)" id='button1' class="fixedbtn"
+          style="margin: 30px 00px 00px 10px; ">Meranie<br>1x230V
+          (20A)</button></p>
+      <p><button onclick="myFunction(2)" id='button2' class="fixedbtn"
+          style="margin: 270px 10px 0px 10px;">Meranie<br>3x400V
+          (20A)</button></p>
+      <p><button onclick="myFunction(3)" id='button3' class="fixedbtn"
+          style="margin: 500px 10px 0px 10px; background-color: rgb(18, 224, 18);">Meranie<br>3x400V
+          (50A)</button></p>
+      <p><button onclick="myFunction(4)" id='button4' class="fixedbtn"
+          style="margin: 740px 10px 0px 10px;">Meranie<br>3x400V
+          (100A)</button></p>
+
+      <p><button onclick="myFunction(5)" id='button5' class="malybtn"
+          style="margin: 970px 10px 0px 10px;">Refres<br>stranky</button></p>
+
+      <div class="Text_faza_V" style="top: 100px; "><span id="Volt1">L1: ---</span></div>
+      <div class="Text_faza_V" style="top: 450px; "><span id="Volt2">L2: ---</span></div>
+      <div class="Text_faza_V" style="top: 810px; "><span id="Volt3">L3: ---</span></div>
+
+      <div class="Text_faza_V" style="top: 100px; left: 1320px;"><span id="Prud1">---</span></div>
+      <div class="Text_faza_V" style="top: 450px; left: 1320px;"><span id="Prud2">---</span></div>
+      <div class="Text_faza_V" style="top: 810px; left: 1320px;"><span id="Prud3">---</span></div>
+    </div>
+  </body>
+
+  </html>
+  )rawliteral";
+
+  const char page_rozsah_100A_3F[] = R"rawliteral(
+  <!DOCTYPE html>
+  <html>
+
+  <head>
+    <title>Meranie Rozsahu 100A 3 fáza</title>
+    <style>
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        margin: 0;
+        padding: 0;
+        background-color: green;
+      }
+
+      #container {
+        width: inherit;
+        height: inherit;
+        margin: 0;
+        padding: 0;
+        background-color: rgb(43, 42, 42);
+      }
+
+      h1 {
+        margin: 0;
+        padding: 0;
+      }
+
+
+      .fixedbtn {
+        position: fixed;
+        width: 18%;
+        height: 15%;
+        font-size: 23px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(255, 255, 255);
+      }
+
+      .malybtn {
+        position: fixed;
+        width: 9%;
+        height: 7%;
+        font-size: 18px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(255, 255, 255);
+      }
+
+      .Text_faza_V {
+        position: fixed;
+        font-size: 123px;
+        color: white;
+        left: 550px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+    </style>
+
+    <script>
+
+      function myFunction(rt) {
+
+        console.log('[myFunction (rt)] Button ma param:' + rt);
+
+        if (rt == 10) { console.log('My func 1 - odosielam OnOFF_Zavlahu'); websocket.send('OnOFF_Zavlahu'); }
+        else if (rt == 1) {
+          console.log('My func 1');
+          window.location.assign("/meraj20A_1F");
+        }
+        else if (rt == 2) {
+          console.log('My func 2');
+          window.location.assign("/meraj20A_3F");
+        }
+        else if (rt == 3) {
+          console.log('My func 3');
+          window.location.assign("/meraj50A_3F");
+        }
+        else if (rt == 4) {
+          console.log('My func 4');
+          window.location.assign("/meraj100A_3F");
+        }
+        else if (rt == 5) { window.location.assign("/hlavne"); }
+        else if (rt == 6) { window.location.assign("/NastavVentil?ventil=5"); }
+        else if (rt == 7) { window.location.assign("/NastavVentil?ventil=6"); }
+        else if (rt == 22) {
+          window.location.assign("/NastavVentil?param1=3");
+          //websocket.send ('ZaluzieZatvorVsetky');
+        }
+
+        else if (rt == 100) { window.location.assign("/"); }
+      }
+    </script>
+
+  </head>
+
+  <body>
+    <div id="container">
+      <!--<h1>Hello Worldf</h1>-->
+      <p><button onclick="myFunction(1)" id='button1' class="fixedbtn"
+          style="margin: 30px 00px 00px 10px; ">Meranie<br>1x230V
+          (20A)</button></p>
+      <p><button onclick="myFunction(2)" id='button2' class="fixedbtn"
+          style="margin: 270px 10px 0px 10px;">Meranie<br>3x400V
+          (20A)</button></p>
+      <p><button onclick="myFunction(3)" id='button3' class="fixedbtn"
+          style="margin: 500px 10px 0px 10px; ">Meranie<br>3x400V
+          (50A)</button></p>
+      <p><button onclick="myFunction(4)" id='button4' class="fixedbtn"
+          style="margin: 740px 10px 0px 10px;background-color: rgb(18, 224, 18); ">Meranie<br>3x400V
           (100A)</button></p>
 
       <p><button onclick="myFunction(5)" id='button5' class="malybtn"
