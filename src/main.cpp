@@ -399,11 +399,28 @@ void WebServerHandler(u8 s)
         log_i("Super stranky zadaju GEY AJAX s 20A 1F");
         citac += 0.01f;
         AjaxObjekt["U1"] = String(citac);
+        AjaxObjekt["I1"] = String(citac + 10.11);
         jsonString = JSON.stringify(AjaxObjekt);
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
         zobraz_stranky(s, (const char *)TX_BUF);
       }
 
+      else if (!strncmp((char *)TX_BUF, "GET /posliUI_20A_3F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_20A_3F?", 20) ||
+               strncmp((char *)TX_BUF, "GET /posliUI_50A_3F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_50A_3F?", 20) ||
+               strncmp((char *)TX_BUF, "GET /posliUI_100A_3F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_100A_3F?", 20) )
+      {
+        log_i("Super stranky zadaju GEY AJAX s 20A az 100A  3F");
+        citac += 0.01f;
+        AjaxObjekt["U1"] = String(citac);
+        AjaxObjekt["I1"] = String(citac + 10.11);
+        AjaxObjekt["U2"] = String(citac);
+        AjaxObjekt["I2"] = String(citac + 20.11);
+        AjaxObjekt["U3"] = String(citac);
+        AjaxObjekt["I3"] = String(citac + 20.11);
+        jsonString = JSON.stringify(AjaxObjekt);
+        jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
+        zobraz_stranky(s, (const char *)TX_BUF);
+      }
       delay(100);
       disconnect(s);
     }

@@ -364,6 +364,7 @@
   <html>
 
   <head>
+    <meta charset="utf-8">
     <title>Hello Worldek</title>
     <style>
       html,
@@ -523,6 +524,7 @@
   <html>
 
   <head>
+    <meta charset="utf-8">
     <title>Meranie Rozsahu 20A 1 fáza</title>
     <style>
       html,
@@ -559,8 +561,8 @@
 
       .malybtn {
         position: fixed;
-        width: 9%;
-        height: 7%;
+        width: 210px;
+        height: 100px;
         font-size: 18px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: rgb(255, 255, 255);
@@ -589,11 +591,8 @@
           if (this.readyState == 4 && this.status == 200) {
             var obj = JSON.parse(this.responseText);
             console.log(this.responseText);
-            var x = obj.U1;
-            console.log('X vidim takto:' + x);
-            document.getElementById("Volt1").innerHTML = Math.round(x * 10) / 10 + " V";
-            document.getElementById("Prud1").innerHTML = Math.round(x * 100) / 100 + " A";
-            console.log("myOjb vraca:" + obj.U1);
+            document.getElementById("Volt1").innerHTML = Math.round(obj.U1 * 10) / 10 + " V";
+            document.getElementById("Prud1").innerHTML = Math.round(obj.I1 * 100) / 100 + " A";
           }
         };
         xhttp.open("GET", "/posliUI_20A_1F?", true);
@@ -653,6 +652,8 @@
 
       <p><button onclick="myFunction(5)" id='button5' class="malybtn"
           style="margin: 970px 10px 0px 10px;">Refres<br>stranky</button></p>
+      <p><button onclick="myFunction(6)" id='button6' class="malybtn"
+          style="margin: 970px 250px;">Info<br>systému</button></p>
 
       <div class="Text_faza_V" style="top: 200px; "><span id="Volt1">---</span></div>
       <div class="Text_faza_V" style="top: 600px; "><span id="Prud1">---</span></div>
@@ -667,6 +668,7 @@
   <html>
 
   <head>
+    <meta charset="utf-8">
     <title>Meranie Rozsahu 20A 3 f</title>
     <style>
       html,
@@ -703,8 +705,8 @@
 
       .malybtn {
         position: fixed;
-        width: 9%;
-        height: 7%;
+        width: 210px;
+        height: 100px;
         font-size: 18px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: rgb(255, 255, 255);
@@ -720,6 +722,31 @@
     </style>
 
     <script>
+
+      setInterval(function () {
+        console.log('Timer bude posial Ajax');
+        getData();
+
+      }, 900);
+
+      function getData() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            var obj = JSON.parse(this.responseText);
+            //console.log(this.responseText);
+
+            document.getElementById("Volt1").innerHTML = "L1 " + Math.round(obj.U1 * 10) / 10 + " V";
+            document.getElementById("Prud1").innerHTML = Math.round(obj.I1 * 100) / 100 + " A";
+            document.getElementById("Volt2").innerHTML = "L2 " + Math.round(obj.U2 * 10) / 10 + " V";
+            document.getElementById("Prud2").innerHTML = Math.round(obj.I2 * 100) / 100 + " A";
+            document.getElementById("Volt3").innerHTML = "L3 " + Math.round(obj.U3 * 10) / 10 + " V";
+            document.getElementById("Prud3").innerHTML = Math.round(obj.I3 * 100) / 100 + " A";
+          }
+        };
+        xhttp.open("GET", "/posliUI_20A_3F?", true);
+        xhttp.send();
+      }
 
       function myFunction(rt) {
 
@@ -774,6 +801,8 @@
 
       <p><button onclick="myFunction(5)" id='button5' class="malybtn"
           style="margin: 970px 10px 0px 10px;">Refres<br>stranky</button></p>
+      <p><button onclick="myFunction(6)" id='button6' class="malybtn"
+          style="margin: 970px 250px;">Info<br>systému</button></p>
 
       <div class="Text_faza_V" style="top: 100px; "><span id="Volt1">L1: ---</span></div>
       <div class="Text_faza_V" style="top: 450px; "><span id="Volt2">L2: ---</span></div>
@@ -793,6 +822,7 @@
   <html>
 
   <head>
+    <meta charset="utf-8">
     <title>Meranie Rozsahu 50A 3 fáza</title>
     <style>
       html,
@@ -829,8 +859,8 @@
 
       .malybtn {
         position: fixed;
-        width: 9%;
-        height: 7%;
+        width: 210px;
+        height: 100px;
         font-size: 18px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: rgb(255, 255, 255);
@@ -900,6 +930,8 @@
 
       <p><button onclick="myFunction(5)" id='button5' class="malybtn"
           style="margin: 970px 10px 0px 10px;">Refres<br>stranky</button></p>
+      <p><button onclick="myFunction(6)" id='button6' class="malybtn"
+          style="margin: 970px 250px;">Info<br>systému</button></p>
 
       <div class="Text_faza_V" style="top: 100px; "><span id="Volt1">L1: ---</span></div>
       <div class="Text_faza_V" style="top: 450px; "><span id="Volt2">L2: ---</span></div>
@@ -919,6 +951,7 @@
   <html>
 
   <head>
+    <meta charset="utf-8">
     <title>Meranie Rozsahu 100A 3 fáza</title>
     <style>
       html,
@@ -955,8 +988,8 @@
 
       .malybtn {
         position: fixed;
-        width: 9%;
-        height: 7%;
+        width: 210px;
+        height: 100px;
         font-size: 18px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: rgb(255, 255, 255);
@@ -1026,6 +1059,8 @@
 
       <p><button onclick="myFunction(5)" id='button5' class="malybtn"
           style="margin: 970px 10px 0px 10px;">Refres<br>stranky</button></p>
+      <p><button onclick="myFunction(6)" id='button6' class="malybtn"
+          style="margin: 970px 250px;">Info<br>systému</button></p>
 
       <div class="Text_faza_V" style="top: 100px; "><span id="Volt1">L1: ---</span></div>
       <div class="Text_faza_V" style="top: 450px; "><span id="Volt2">L2: ---</span></div>
