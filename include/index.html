@@ -568,14 +568,37 @@
 
       .Text_faza_V {
         position: fixed;
-        font-size: 123px;
+        font-size: 180px;
         color: white;
-        left: 550px;
+        left: 930px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
     </style>
 
     <script>
+
+      setInterval(function () {
+        console.log('Timer bude posial Ajax');
+        getData();
+
+      }, 900);
+
+      function getData() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            var obj = JSON.parse(this.responseText);
+            console.log(this.responseText);
+            var x = obj.U1;
+            console.log('X vidim takto:' + x);
+            document.getElementById("Volt1").innerHTML = Math.round(x * 10) / 10 + " V";
+            document.getElementById("Prud1").innerHTML = Math.round(x * 100) / 100 + " A";
+            console.log("myOjb vraca:" + obj.U1);
+          }
+        };
+        xhttp.open("GET", "/posliUI_20A_1F?", true);
+        xhttp.send();
+      }
 
       function myFunction(rt) {
 
@@ -631,8 +654,8 @@
       <p><button onclick="myFunction(5)" id='button5' class="malybtn"
           style="margin: 970px 10px 0px 10px;">Refres<br>stranky</button></p>
 
-      <div class="Text_faza_V" style="top: 100px; "><span id="Volt1">L1: ---</span></div>
-      <div class="Text_faza_V" style="top: 100px; left: 1320px;"><span id="Prud1">---</span></div>
+      <div class="Text_faza_V" style="top: 200px; "><span id="Volt1">---</span></div>
+      <div class="Text_faza_V" style="top: 600px; "><span id="Prud1">---</span></div>
     </div>
   </body>
 

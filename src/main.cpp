@@ -43,10 +43,10 @@ char NazovSiete[30];
 char Heslo[30];
 
 Ticker timer_10ms(Loop_10ms, 100, 0, MILLIS);
-static JSONVar myObject;
+static JSONVar myObject, AjaxObjekt;
 static String jsonString;
 
-uint16_t citac = 0;
+float citac = 0;
 ; // int reqCount = 0; // number of requests received
 
 void Loop_10ms()
@@ -57,129 +57,129 @@ void Loop_10ms()
 
 void handleNotFound()
 {
-  String message = F("File Not Found\n\n");
+  // String message = F("File Not Found\n\n");
 
-  message += F("URI: ");
-  message += server.uri();
-  if (server.uri() == "/data.txt")
-  {
+  // message += F("URI: ");
+  // message += server.uri();
+  // if (server.uri() == "/data.txt")
+  // {
 
-    server.setContentLength(CONTENT_LENGTH_UNKNOWN); // https://bleepcoder.com/arduino/226633148/server-send-fails-to-send-strings-html-greater-than-6600
-    server.send(200, "text/html", "xx");
-    for (uint16_t i = 0; i < 300; i++)
-    {
-      server.sendContent("123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123456\r\n"); /* code */ /* code */
-    }
-    server.sendContent("KOnec");
-    return;
-  }
-  message += F("\nMethod: ");
-  message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
-  message += F("\nArguments: ");
-  message += server.args();
-  message += F("\n");
+  //   server.setContentLength(CONTENT_LENGTH_UNKNOWN); // https://bleepcoder.com/arduino/226633148/server-send-fails-to-send-strings-html-greater-than-6600
+  //   server.send(200, "text/html", "xx");
+  //   for (uint16_t i = 0; i < 300; i++)
+  //   {
+  //     server.sendContent("123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123456\r\n"); /* code */ /* code */
+  //   }
+  //   server.sendContent("KOnec");
+  //   return;
+  // }
+  // message += F("\nMethod: ");
+  // message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
+  // message += F("\nArguments: ");
+  // message += server.args();
+  // message += F("\n");
 
-  for (uint8_t i = 0; i < server.args(); i++)
-  {
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  }
+  // for (uint8_t i = 0; i < server.args(); i++)
+  // {
+  //   message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+  // }
 
-  server.send(404, F("text/plain"), message);
+  // server.send(404, F("text/plain"), message);
 }
 
 void testFunct()
 {
-  char locBuff[2048];
-  uint32_t index = 0;
+  // char locBuff[2048];
+  // uint32_t index = 0;
 
-  log_i("Desel pozadavek na main");
-  log_i("Main ma delku %u", strlen(DebugLog_html)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
-  server.setContentLength(strlen(DebugLog_html));
+  // log_i("Desel pozadavek na main");
+  // log_i("Main ma delku %u", strlen(DebugLog_html)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
+  // server.setContentLength(strlen(DebugLog_html));
 
-  memset(locBuff, 0, sizeof(locBuff));
-  server.send(200, "text/html", locBuff);
-  u32 kolkoPoslnaych = 0;
-  u32 velkostStranek = strlen(DebugLog_html);
-  do
-  {
-    if (velkostStranek < 1000)
-    {
-      memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], velkostStranek);
-      server.sendContent(locBuff, velkostStranek);
-      kolkoPoslnaych = velkostStranek;
-    }
-    else
-    {
-      u32 zostava = velkostStranek - kolkoPoslnaych;
-      if (zostava < 1000)
-      {
-        memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], zostava);
-        server.sendContent(locBuff, zostava);
-        kolkoPoslnaych += zostava;
-      }
-      else
-      {
-        memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], 1000);
-        server.sendContent(locBuff, 1000);
-        kolkoPoslnaych += 1000;
-      }
-    }
-  } while (kolkoPoslnaych < velkostStranek);
+  // memset(locBuff, 0, sizeof(locBuff));
+  // server.send(200, "text/html", locBuff);
+  // u32 kolkoPoslnaych = 0;
+  // u32 velkostStranek = strlen(DebugLog_html);
+  // do
+  // {
+  //   if (velkostStranek < 1000)
+  //   {
+  //     memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], velkostStranek);
+  //     server.sendContent(locBuff, velkostStranek);
+  //     kolkoPoslnaych = velkostStranek;
+  //   }
+  //   else
+  //   {
+  //     u32 zostava = velkostStranek - kolkoPoslnaych;
+  //     if (zostava < 1000)
+  //     {
+  //       memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], zostava);
+  //       server.sendContent(locBuff, zostava);
+  //       kolkoPoslnaych += zostava;
+  //     }
+  //     else
+  //     {
+  //       memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], 1000);
+  //       server.sendContent(locBuff, 1000);
+  //       kolkoPoslnaych += 1000;
+  //     }
+  //   }
+  // } while (kolkoPoslnaych < velkostStranek);
 
-  // File file = SD.open("/aaa.txt", FILE_READ);
-  //  server.streamFile(file, "text/html");
-  //  file.close();
+  // // File file = SD.open("/aaa.txt", FILE_READ);
+  // //  server.streamFile(file, "text/html");
+  // //  file.close();
 }
 
 void hlavne()
 {
-  char locBuff[2048];
-  uint32_t index = 0;
+  // char locBuff[2048];
+  // uint32_t index = 0;
 
-  log_i("Desel pozadavek na main");
-  log_i("Main ma delku %u", strlen(page_hlavne)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
-  server.setContentLength(strlen(page_hlavne));
+  // log_i("Desel pozadavek na main");
+  // log_i("Main ma delku %u", strlen(page_hlavne)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
+  // server.setContentLength(strlen(page_hlavne));
 
-  memset(locBuff, 0, sizeof(locBuff));
-  server.send(200, "text/html", locBuff);
-  u32 kolkoPoslnaych = 0;
-  u32 velkostStranek = strlen(page_hlavne);
-  do
-  {
-    if (velkostStranek < 1000)
-    {
-      memcpy(locBuff, &page_hlavne[kolkoPoslnaych], velkostStranek);
-      server.sendContent(locBuff, velkostStranek);
-      kolkoPoslnaych = velkostStranek;
-    }
-    else
-    {
-      u32 zostava = velkostStranek - kolkoPoslnaych;
-      if (zostava < 1000)
-      {
-        memcpy(locBuff, &page_hlavne[kolkoPoslnaych], zostava);
-        server.sendContent(locBuff, zostava);
-        kolkoPoslnaych += zostava;
-      }
-      else
-      {
-        memcpy(locBuff, &page_hlavne[kolkoPoslnaych], 1000);
-        server.sendContent(locBuff, 1000);
-        kolkoPoslnaych += 1000;
-      }
-    }
-  } while (kolkoPoslnaych < velkostStranek);
+  // memset(locBuff, 0, sizeof(locBuff));
+  // server.send(200, "text/html", locBuff);
+  // u32 kolkoPoslnaych = 0;
+  // u32 velkostStranek = strlen(page_hlavne);
+  // do
+  // {
+  //   if (velkostStranek < 1000)
+  //   {
+  //     memcpy(locBuff, &page_hlavne[kolkoPoslnaych], velkostStranek);
+  //     server.sendContent(locBuff, velkostStranek);
+  //     kolkoPoslnaych = velkostStranek;
+  //   }
+  //   else
+  //   {
+  //     u32 zostava = velkostStranek - kolkoPoslnaych;
+  //     if (zostava < 1000)
+  //     {
+  //       memcpy(locBuff, &page_hlavne[kolkoPoslnaych], zostava);
+  //       server.sendContent(locBuff, zostava);
+  //       kolkoPoslnaych += zostava;
+  //     }
+  //     else
+  //     {
+  //       memcpy(locBuff, &page_hlavne[kolkoPoslnaych], 1000);
+  //       server.sendContent(locBuff, 1000);
+  //       kolkoPoslnaych += 1000;
+  //     }
+  //   }
+  // } while (kolkoPoslnaych < velkostStranek);
 }
 
 void ReadSuborzSD()
 {
-  char locBuff[2048];
-  uint32_t index = 0;
+  // char locBuff[2048];
+  // uint32_t index = 0;
 
-  log_i("Idenm citat suborDesel pozadavek na hlavne");
-  server.send(200, F("text/plain"), F("subora nacitany"));
+  // log_i("Idenm citat suborDesel pozadavek na hlavne");
+  // server.send(200, F("text/plain"), F("subora nacitany"));
 
-  NacitajSuborzSD();
+  // NacitajSuborzSD();
 }
 
 char buff_extra[4001];
@@ -195,7 +195,7 @@ void setup(void)
   NacitajEEPROM_setting();
   // FuncServer_On();
 
-  server.begin();
+  //  server.begin();
 
   timer_10ms.start();
   esp_task_wdt_init(WDT_TIMEOUT, true); // enable panic so ESP32 restarts
@@ -392,6 +392,16 @@ void WebServerHandler(u8 s)
         zobraz_stranky(s, page_rozsah_100A_3F);
         EEPROM.writeByte(EE_rozsah_Prud, rozsah_100A_3F);
         EEPROM.commit();
+      }
+
+      else if (!strncmp((char *)TX_BUF, "GET /posliUI_20A_1F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_20A_1F?", 20))
+      {
+        log_i("Super stranky zadaju GEY AJAX s 20A 1F");
+        citac += 0.01f;
+        AjaxObjekt["U1"] = String(citac);
+        jsonString = JSON.stringify(AjaxObjekt);
+        jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
+        zobraz_stranky(s, (const char *)TX_BUF);
       }
 
       delay(100);
@@ -628,12 +638,12 @@ void t1_MAIN(void *arg)
 {
   log_i("Spustam Task1");
 
-  FuncServer_On();
+  // FuncServer_On();
 
   while (1)
   {
     UDPhandler();
-    server.handleClient();
+    // server.handleClient();
 
     WebServerHandler(6);
 
