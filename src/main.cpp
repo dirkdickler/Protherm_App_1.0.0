@@ -322,7 +322,33 @@ void WebServerHandler(u8 s)
       if (!strncmp((char *)TX_BUF, "GET /hlavne", 11) || !strncmp((char *)TX_BUF, "get /hlavne", 11))
       {
         log_i("Super stranky zadaju HLAVNE");
-        zobraz_stranky(s, page_hlavne);
+        u8 coSAMera = EEPROM.readByte(EE_rozsah_Prud);
+        if (coSAMera == rozsah_20A_1F)
+        {
+          log_i("A to na Rozsah 1F 20A");
+          zobraz_stranky(s, page_rozsah_20A_1F);
+        }
+        else if (coSAMera == rozsah_20A_3F)
+        {
+          log_i("A to na Rozsah 3F 20A");
+          zobraz_stranky(s, page_rozsah_20A_3F);
+        }
+        else if (coSAMera == rozsah_50A_3F)
+        {
+          log_i("A to na Rozsah 3F 50A");
+          zobraz_stranky(s, page_rozsah_50A_3F);
+        }
+        else if (coSAMera == rozsah_100A_3F)
+        {
+          log_i("A to na Rozsah 3F 100A");
+          zobraz_stranky(s, page_rozsah_100A_3F);
+        }
+        else
+        {
+          log_i("Chyba lebo v EEPROM na adrese EE_rozsah_Prud je ulezeno %u", coSAMera);
+          log_i("Tak davam vychoziu strnaku 20A 1F");
+          zobraz_stranky(s, page_rozsah_20A_1F);
+        }
       }
       else if (!strncmp((char *)TX_BUF, "GET /main", 9) || !strncmp((char *)TX_BUF, "get /main", 9))
       {
@@ -338,6 +364,34 @@ void WebServerHandler(u8 s)
         jsonString = JSON.stringify(myObject);
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
         zobraz_stranky(s, (const char *)TX_BUF);
+      }
+      else if (!strncmp((char *)TX_BUF, "GET /meraj20A_1F", 16))
+      {
+        log_i("Super stranky zadaju Meraj 20A 1F");
+        zobraz_stranky(s, page_rozsah_20A_1F);
+        EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_1F);
+        EEPROM.commit();
+      }
+      else if (!strncmp((char *)TX_BUF, "GET /meraj20A_3F", 16))
+      {
+        log_i("Super stranky zadaju Meraj 20A 3F");
+        zobraz_stranky(s, page_rozsah_20A_3F);
+        EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_3F);
+        EEPROM.commit();
+      }
+      else if (!strncmp((char *)TX_BUF, "GET /meraj50A_3F", 16))
+      {
+        log_i("Super stranky zadaju Meraj 20A 3F");
+        zobraz_stranky(s, page_rozsah_50A_3F);
+        EEPROM.writeByte(EE_rozsah_Prud, rozsah_50A_3F);
+        EEPROM.commit();
+      }
+      else if (!strncmp((char *)TX_BUF, "GET /meraj100A_3F", 16))
+      {
+        log_i("Super stranky zadaju Meraj 100A 3F");
+        zobraz_stranky(s, page_rozsah_100A_3F);
+        EEPROM.writeByte(EE_rozsah_Prud, rozsah_100A_3F);
+        EEPROM.commit();
       }
 
       delay(100);
@@ -398,9 +452,9 @@ void TCP_handler(u8 s)
         EEPROM.writeLong(EE_Vin_offset_1, *(i32 *)&TX_BUF[24]);
         EEPROM.writeLong(EE_Vin_offset_2, *(i32 *)&TX_BUF[28]);
         EEPROM.writeLong(EE_Vin_offset_3, *(i32 *)&TX_BUF[32]);
-        EEPROM.writeLong(EE_Iin_gain_1, *(i32 *)&TX_BUF[36]);
-        EEPROM.writeLong(EE_Iin_gain_2, *(i32 *)&TX_BUF[40]);
-        EEPROM.writeLong(EE_Iin_gain_3, *(i32 *)&TX_BUF[44]);
+        EEPROM.writeLong(EE_Iin_gain_1_20A, *(i32 *)&TX_BUF[36]);
+        EEPROM.writeLong(EE_Iin_gain_2_20A, *(i32 *)&TX_BUF[40]);
+        EEPROM.writeLong(EE_Iin_gain_3_20A, *(i32 *)&TX_BUF[44]);
         EEPROM.writeLong(EE_Iin_offset_1, *(i32 *)&TX_BUF[48]);
         EEPROM.writeLong(EE_Iin_offset_2, *(i32 *)&TX_BUF[52]);
         EEPROM.writeLong(EE_Iin_offset_3, *(i32 *)&TX_BUF[56]);
@@ -414,14 +468,59 @@ void TCP_handler(u8 s)
         ADE9078_Wr32(ADDR_BVRMSOS, EEPROM.readLong(EE_Vin_offset_2));
         ADE9078_Wr32(ADDR_CVRMSOS, EEPROM.readLong(EE_Vin_offset_3));
 
-        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1));
-        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2));
-        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3));
+        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_20A));
+        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_20A));
+        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_20A));
         ADE9078_Wr32(ADDR_AIRMSOS, EEPROM.readLong(EE_Iin_offset_1));
         ADE9078_Wr32(ADDR_BIRMSOS, EEPROM.readLong(EE_Iin_offset_2));
         ADE9078_Wr32(ADDR_CIRMSOS, EEPROM.readLong(EE_Iin_offset_3));
 
-        snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO Energy_calib  !!!!");
+        snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO Energy_calib na napetie !!");
+        send(s, TX_BUF, strlen((char *)TX_BUF));
+      }
+      else if (!strncmp((const char *)TX_BUF, "Energy_c_20A", 12))
+      {
+        EEPROM.writeLong(EE_Iin_gain_1_20A, *(i32 *)&TX_BUF[12]);
+        EEPROM.writeLong(EE_Iin_gain_2_20A, *(i32 *)&TX_BUF[16]);
+        EEPROM.writeLong(EE_Iin_gain_3_20A, *(i32 *)&TX_BUF[20]);
+
+        EEPROM.commit();
+
+        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_20A));
+        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_20A));
+        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_20A));
+
+        snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO Energy_calib na 20A !!");
+        send(s, TX_BUF, strlen((char *)TX_BUF));
+      }
+      else if (!strncmp((const char *)TX_BUF, "Energy_c_50A", 12))
+      {
+        EEPROM.writeLong(EE_Iin_gain_1_50A, *(i32 *)&TX_BUF[12]);
+        EEPROM.writeLong(EE_Iin_gain_2_50A, *(i32 *)&TX_BUF[16]);
+        EEPROM.writeLong(EE_Iin_gain_3_50A, *(i32 *)&TX_BUF[20]);
+
+        EEPROM.commit();
+
+        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_50A));
+        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_50A));
+        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_50A));
+
+        snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO Energy_calib na 50A!!");
+        send(s, TX_BUF, strlen((char *)TX_BUF));
+      }
+      else if (!strncmp((const char *)TX_BUF, "Energy__100A", 12))
+      {
+        EEPROM.writeLong(EE_Iin_gain_1_100A, *(i32 *)&TX_BUF[12]);
+        EEPROM.writeLong(EE_Iin_gain_2_100A, *(i32 *)&TX_BUF[16]);
+        EEPROM.writeLong(EE_Iin_gain_3_100A, *(i32 *)&TX_BUF[20]);
+
+        EEPROM.commit();
+
+        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_100A));
+        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_100A));
+        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_100A));
+
+        snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO Energy_calib na 100A!!");
         send(s, TX_BUF, strlen((char *)TX_BUF));
       }
     }
@@ -472,9 +571,9 @@ void Task_handle_ADE9078_Code(void *arg)
   ADE9078_Wr32(ADDR_BVRMSOS, EEPROM.readLong(EE_Vin_offset_2));
   ADE9078_Wr32(ADDR_CVRMSOS, EEPROM.readLong(EE_Vin_offset_3));
 
-  ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1));
-  ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2));
-  ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3));
+  ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_20A));
+  ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_20A));
+  ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_20A));
   ADE9078_Wr32(ADDR_AIRMSOS, EEPROM.readLong(EE_Iin_offset_1));
   ADE9078_Wr32(ADDR_BIRMSOS, EEPROM.readLong(EE_Iin_offset_2));
   ADE9078_Wr32(ADDR_CIRMSOS, EEPROM.readLong(EE_Iin_offset_3));
@@ -483,8 +582,8 @@ void Task_handle_ADE9078_Code(void *arg)
   {
     meranie.U1 = ADE9078_Rd_u32(ADDR_AVRMS);
     meranie.U1 /= DelPomer_U;
-    log_i("Nacitane meranie.U1: %4.2f", meranie.U1);
-    log_i("Nacitane Reg32 a to ADDR_AVRMS je: %lu", ADE9078_Rd_u32(ADDR_AVRMS));
+    // log_i("Nacitane meranie.U1: %4.2f", meranie.U1);
+    // log_i("Nacitane Reg32 a to ADDR_AVRMS je: %lu", ADE9078_Rd_u32(ADDR_AVRMS));
 
     if (meranie.U1 > 50)
     {
@@ -537,7 +636,7 @@ void t1_MAIN(void *arg)
     server.handleClient();
 
     WebServerHandler(6);
-    
+
     TCP_handler(7);
     // log_i("Task 1 loop");
     delay(10);
