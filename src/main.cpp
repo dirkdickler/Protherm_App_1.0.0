@@ -371,6 +371,9 @@ void WebServerHandler(u8 s)
         zobraz_stranky(s, page_rozsah_20A_1F);
         EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_1F);
         EEPROM.commit();
+        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_20A));
+        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_20A));
+        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_20A));
       }
       else if (!strncmp((char *)TX_BUF, "GET /meraj20A_3F", 16))
       {
@@ -378,10 +381,13 @@ void WebServerHandler(u8 s)
         zobraz_stranky(s, page_rozsah_20A_3F);
         EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_3F);
         EEPROM.commit();
+        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_50A));
+        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_50A));
+        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_50A));
       }
       else if (!strncmp((char *)TX_BUF, "GET /meraj50A_3F", 16))
       {
-        log_i("Super stranky zadaju Meraj 20A 3F");
+        log_i("Super stranky zadaju Meraj 50A 3F");
         zobraz_stranky(s, page_rozsah_50A_3F);
         EEPROM.writeByte(EE_rozsah_Prud, rozsah_50A_3F);
         EEPROM.commit();
@@ -392,6 +398,9 @@ void WebServerHandler(u8 s)
         zobraz_stranky(s, page_rozsah_100A_3F);
         EEPROM.writeByte(EE_rozsah_Prud, rozsah_100A_3F);
         EEPROM.commit();
+        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_100A));
+        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_100A));
+        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_100A));
       }
 
       else if (!strncmp((char *)TX_BUF, "GET /posliUI_20A_1F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_20A_1F?", 20))
@@ -407,16 +416,16 @@ void WebServerHandler(u8 s)
 
       else if (!strncmp((char *)TX_BUF, "GET /posliUI_20A_3F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_20A_3F?", 20) ||
                strncmp((char *)TX_BUF, "GET /posliUI_50A_3F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_50A_3F?", 20) ||
-               strncmp((char *)TX_BUF, "GET /posliUI_100A_3F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_100A_3F?", 20) )
+               strncmp((char *)TX_BUF, "GET /posliUI_100A_3F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_100A_3F?", 20))
       {
         log_i("Super stranky zadaju GEY AJAX s 20A az 100A  3F");
         citac += 0.01f;
-        AjaxObjekt["U1"] = String(citac); //meranie.U1;
-        AjaxObjekt["I1"] = String(citac + 10.11); //meranie.I1;
-        AjaxObjekt["U2"] = String(citac); //meranie.U2;
-        AjaxObjekt["I2"] = String(citac + 20.11); //meranie.I2;
-        AjaxObjekt["U3"] = String(citac); //meranie.U3;
-        AjaxObjekt["I3"] = String(citac + 20.11);  //meranie.I3;
+        AjaxObjekt["U1"] = String(citac);         // meranie.U1;
+        AjaxObjekt["I1"] = String(citac + 10.11); // meranie.I1;
+        AjaxObjekt["U2"] = String(citac);         // meranie.U2;
+        AjaxObjekt["I2"] = String(citac + 20.11); // meranie.I2;
+        AjaxObjekt["U3"] = String(citac);         // meranie.U3;
+        AjaxObjekt["I3"] = String(citac + 20.11); // meranie.I3;
         jsonString = JSON.stringify(AjaxObjekt);
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
         zobraz_stranky(s, (const char *)TX_BUF);
