@@ -592,7 +592,7 @@
             var obj = JSON.parse(this.responseText);
             console.log(this.responseText);
             document.getElementById("Volt1").innerHTML = "U= " + Math.round(obj.U1 * 10) / 10 + " V";
-            document.getElementById("Prud1").innerHTML = "I= " + Math.round(obj.I1 * 100) / 100 + " A";
+            document.getElementById("Prud1").innerHTML = " I= " + Math.round(obj.I1 * 100) / 100 + " A";
           }
         };
         xhttp.open("GET", "/posliUI_20A_1F?", true);
@@ -621,7 +621,7 @@
           window.location.assign("/meraj100A_3F");
         }
         else if (rt == 5) { window.location.assign("/hlavne"); }
-        else if (rt == 6) { window.location.assign("/NastavVentil?ventil=5"); }
+        else if (rt == 6) { window.location.assign("/status"); }
         else if (rt == 7) { window.location.assign("/NastavVentil?ventil=6"); }
         else if (rt == 22) {
           window.location.assign("/NastavVentil?param1=3");
@@ -650,13 +650,13 @@
           style="margin: 740px 10px 0px 10px;">Meranie<br>3x230V
           (100A)</button></p>
 
-      <p><button onclick="myFunction(5)" id='button5' class="malybtn"
-          style="margin: 970px 10px 0px 10px;">Refreš<br>stránky</button></p>
+      <p><button onclick="myFunction(5)" id='button5' class="malybtn" style="margin: 970px 10px 0px 10px;">Pokračuj
+          v<br>meraní</button></p>
       <p><button onclick="myFunction(6)" id='button6' class="malybtn"
           style="margin: 970px 273px;">Info<br>systému</button></p>
       <div class="Text_faza_V" style="left: 1100px; top: 40px; ">L1</div>
-      <div class="Text_faza_V" style="top: 300px; "><span id="Volt1">  ---</span></div>
-      <div class="Text_faza_V" style="top: 600px; "><span id="Prud1">  ---</span></div>
+      <div class="Text_faza_V" style="top: 300px; "><span id="Volt1"> ---</span></div>
+      <div class="Text_faza_V" style="top: 600px; "><span id="Prud1"> ---</span></div>
     </div>
   </body>
 
@@ -770,7 +770,7 @@
           window.location.assign("/meraj100A_3F");
         }
         else if (rt == 5) { window.location.assign("/hlavne"); }
-        else if (rt == 6) { window.location.assign("/NastavVentil?ventil=5"); }
+        else if (rt == 6) { window.location.assign("/status"); }
         else if (rt == 7) { window.location.assign("/NastavVentil?ventil=6"); }
         else if (rt == 22) {
           window.location.assign("/NastavVentil?param1=3");
@@ -799,8 +799,8 @@
           style="margin: 740px 10px 0px 10px;">Meranie<br>3x230V
           (100A)</button></p>
 
-      <p><button onclick="myFunction(5)" id='button5' class="malybtn"
-          style="margin: 970px 10px 0px 10px;">Refreš<br>stránky</button></p>
+      <p><button onclick="myFunction(5)" id='button5' class="malybtn" style="margin: 970px 10px 0px 10px;">Pokračuj
+          v<br>meraní</button></p>
       <p><button onclick="myFunction(6)" id='button6' class="malybtn"
           style="margin: 970px 273px;">Info<br>systému</button></p>
 
@@ -899,7 +899,7 @@
           window.location.assign("/meraj100A_3F");
         }
         else if (rt == 5) { window.location.assign("/hlavne"); }
-        else if (rt == 6) { window.location.assign("/NastavVentil?ventil=5"); }
+        else if (rt == 6) { window.location.assign("/status"); }
         else if (rt == 7) { window.location.assign("/NastavVentil?ventil=6"); }
         else if (rt == 22) {
           window.location.assign("/NastavVentil?param1=3");
@@ -928,8 +928,8 @@
           style="margin: 740px 10px 0px 10px;">Meranie<br>3x230V
           (100A)</button></p>
 
-      <p><button onclick="myFunction(5)" id='button5' class="malybtn"
-          style="margin: 970px 10px 0px 10px;">Refreš<br>stránky</button></p>
+      <p><button onclick="myFunction(5)" id='button5' class="malybtn" style="margin: 970px 10px 0px 10px;">Pokračuj
+          v<br>meraní</button></p>
       <p><button onclick="myFunction(6)" id='button6' class="malybtn"
           style="margin: 970px 273px;">Info<br>systému</button></p>
 
@@ -1028,7 +1028,7 @@
           window.location.assign("/meraj100A_3F");
         }
         else if (rt == 5) { window.location.assign("/hlavne"); }
-        else if (rt == 6) { window.location.assign("/NastavVentil?ventil=5"); }
+        else if (rt == 6) { window.location.assign("/status"); }
         else if (rt == 7) { window.location.assign("/NastavVentil?ventil=6"); }
         else if (rt == 22) {
           window.location.assign("/NastavVentil?param1=3");
@@ -1057,8 +1057,8 @@
           style="margin: 740px 10px 0px 10px;background-color: rgb(18, 224, 18); ">Meranie<br>3x230V
           (100A)</button></p>
 
-      <p><button onclick="myFunction(5)" id='button5' class="malybtn"
-          style="margin: 970px 10px 0px 10px;">Refreš<br>stránky</button></p>
+      <p><button onclick="myFunction(5)" id='button5' class="malybtn" style="margin: 970px 10px 0px 10px;">Pokračuj
+          v<br>meraní</button></p>
       <p><button onclick="myFunction(6)" id='button6' class="malybtn"
           style="margin: 970px 273px;">Info<br>systému</button></p>
 
