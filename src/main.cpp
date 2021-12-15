@@ -5,6 +5,7 @@
 #include "Ethernet3.h"
 #include <EthernetWebServer.h>
 #include <utility\socket.h>
+#include "utility\w5500.h"
 #include "FS.h"
 #include "SD.h"
 #include <Ticker.h>
@@ -45,6 +46,8 @@ char Heslo[30];
 Ticker timer_10ms(Loop_10ms, 100, 0, MILLIS);
 static JSONVar myObject, AjaxObjekt;
 static String jsonString;
+
+FLAGS_t flg;
 
 float citac = 0;
 ; // int reqCount = 0; // number of requests received
@@ -189,10 +192,10 @@ void setup(void)
 
   Serial.begin(115200);
   Serial.println("Spustam applikaciu...Beta 1");
+  NacitajEEPROM_setting();
   System_init();
   // NacitajSuborzSD();
 
-  NacitajEEPROM_setting();
   // FuncServer_On();
 
   //  server.begin();
@@ -425,12 +428,12 @@ void WebServerHandler(u8 s)
       {
         log_i("Super stranky zadaju GEY AJAX s 20A az 100A  3F");
         citac += 0.01f;
-        AjaxObjekt["U1"] = String(meranie.U1); 
-        AjaxObjekt["I1"] = String(meranie.I1); 
-        AjaxObjekt["U2"] = String(meranie.U2); 
-        AjaxObjekt["I2"] = String(meranie.I2); 
-        AjaxObjekt["U3"] = String(meranie.U3); 
-        AjaxObjekt["I3"] = String(meranie.I3); 
+        AjaxObjekt["U1"] = String(meranie.U1);
+        AjaxObjekt["I1"] = String(meranie.I1);
+        AjaxObjekt["U2"] = String(meranie.U2);
+        AjaxObjekt["I2"] = String(meranie.I2);
+        AjaxObjekt["U3"] = String(meranie.U3);
+        AjaxObjekt["I3"] = String(meranie.I3);
         jsonString = JSON.stringify(AjaxObjekt);
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
         zobraz_stranky(s, (const char *)TX_BUF);
@@ -457,16 +460,18 @@ void WebServerHandler(u8 s)
 void TCP_handler(u8 s)
 {
   char loc_buff[200];
-  uint8_t st = w5500.readSnSR(7);
-  if (st == 0x17) // establiset
+  uint8_t st = w5500.readSnSR(s);
+  if (st == SnSR::ESTABLISHED)
   {
+    flg.TCPsocketConneknuty = true;
+
     uint16_t size;
-    size = w5500.getRXReceivedSize(7);
+    size = w5500.getRXReceivedSize(s);
     if (size > 0)
     {
       log_i("TCP handler dostal:%u", size);
       memset(TX_BUF, 0, 2500);
-      recv(7, TX_BUF, size);
+      recv(s, TX_BUF, size);
       // Serial.print(F("\r\nA to : "));
       // Serial.println((char *)TX_BUF);
       //  disconnect(7);
@@ -480,25 +485,36 @@ void TCP_handler(u8 s)
         log_i("Super stranky zadaju MAIN");
         // zobraz_stranky(DebugLog_html);
       }
+
+      // pro MAC:
+      //  Energy_calib$01$07$00$00 $01$70$ff$ff $01$4a$00$00 $ff$01$00$00 $01$00$00$00 $01$00$00$00 $01$00$00$00 $00$01$00$00 $00$00$00$00
+      //  Energy_c_20A$01$3e$ef$10 $01$3e$ef$10 $01$3e$ef$10
+
+      else if (!strncmp((const char *)TX_BUF, "MaC:", 4)) // MaC:$81$20$13$57$C8$CA
+      {
+        for (u8 i = 0; i < 6; i++)
+        {
+          LAN_MAC[i] = TX_BUF[i + 4];
+        }
+
+        EEPROM.writeBytes(EE_MAC_LAN, LAN_MAC, 6);
+        EEPROM.commit();
+
+        snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO nastaveni MAC adrese");
+        send(s, TX_BUF, strlen((char *)TX_BUF));
+      }
+
       else if (!strncmp((const char *)TX_BUF, "Energy_calib", 12))
       {
-        // Energy_calib$10$00$b5$ff$10$00$b5$ff$10$00$b5$ff$10$00$00$00$10$00$00$00$10$00$00$00$01$11$09$00$10$11$09$00$10$11$09$00$10$00$00$00$10$00$00$00$10$00$00$00   //tato dava z hruba z 238V na 230V
-        // Energy_calib$10$00$db$ff$10$00$db$ff$10$00$db$ff$10$00$00$00$10$00$00$00$10$00$00$00$01$11$09$00$10$11$09$00$10$11$09$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato dava z hruba z 234V na 230V
-        // Energy_calib$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato veta dava skoro na nulu ako DEfault
-        // Energy_calib$10$00$2e$00$10$00$2e$00$10$00$2e$00$10$00$00$00$10$00$00$00$10$00$00$00$01$11$2f$00$10$11$2f$00$10$11$2f$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato dava z hruba z 224V na 230V  a pruz z 4,90A na 5A
-        // Energy_calib$00$00$32$02$11$00$32$02$11$00$32$02$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00$10$00$00$00  //tato veta dava skoro na nulu ako DEfault - ale pre jednotku co maju DElic 3x 330k
         EEPROM.writeLong(EE_Vin_gain_1, *(i32 *)&TX_BUF[12]);
         EEPROM.writeLong(EE_Vin_gain_2, *(i32 *)&TX_BUF[16]);
         EEPROM.writeLong(EE_Vin_gain_3, *(i32 *)&TX_BUF[20]);
         EEPROM.writeLong(EE_Vin_offset_1, *(i32 *)&TX_BUF[24]);
         EEPROM.writeLong(EE_Vin_offset_2, *(i32 *)&TX_BUF[28]);
         EEPROM.writeLong(EE_Vin_offset_3, *(i32 *)&TX_BUF[32]);
-        EEPROM.writeLong(EE_Iin_gain_1_20A, *(i32 *)&TX_BUF[36]);
-        EEPROM.writeLong(EE_Iin_gain_2_20A, *(i32 *)&TX_BUF[40]);
-        EEPROM.writeLong(EE_Iin_gain_3_20A, *(i32 *)&TX_BUF[44]);
-        EEPROM.writeLong(EE_Iin_offset_1, *(i32 *)&TX_BUF[48]);
-        EEPROM.writeLong(EE_Iin_offset_2, *(i32 *)&TX_BUF[52]);
-        EEPROM.writeLong(EE_Iin_offset_3, *(i32 *)&TX_BUF[56]);
+        EEPROM.writeLong(EE_Iin_offset_1, *(i32 *)&TX_BUF[36]);
+        EEPROM.writeLong(EE_Iin_offset_2, *(i32 *)&TX_BUF[40]);
+        EEPROM.writeLong(EE_Iin_offset_3, *(i32 *)&TX_BUF[44]);
 
         EEPROM.commit();
 
@@ -508,10 +524,6 @@ void TCP_handler(u8 s)
         ADE9078_Wr32(ADDR_AVRMSOS, EEPROM.readLong(EE_Vin_offset_1));
         ADE9078_Wr32(ADDR_BVRMSOS, EEPROM.readLong(EE_Vin_offset_2));
         ADE9078_Wr32(ADDR_CVRMSOS, EEPROM.readLong(EE_Vin_offset_3));
-
-        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_20A));
-        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_20A));
-        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_20A));
         ADE9078_Wr32(ADDR_AIRMSOS, EEPROM.readLong(EE_Iin_offset_1));
         ADE9078_Wr32(ADDR_BIRMSOS, EEPROM.readLong(EE_Iin_offset_2));
         ADE9078_Wr32(ADDR_CIRMSOS, EEPROM.readLong(EE_Iin_offset_3));
@@ -567,23 +579,26 @@ void TCP_handler(u8 s)
     }
   }
 
-  else if (st == 0x1c) // SOCK_CLOSE_WAIT
+  else if (st == SnSR::CLOSE_WAIT)
   {
     disconnect(s);
+    log_i("%d:CloseWait\r\n", s);
   }
-  else if (st == 0x00) // SOCK_CLOSED
+  else if (st == SnSR::CLOSED)
   {
     socket(s, 1, 10001, 0x00);
+    log_i("%d:Closed\r\n", s);
   }
-  else if (st == 0x13) // SOCK_Init
+  else if (st == SnSR::INIT) // SOCK_Init
   {
     listen(s);
+    log_i("%d:Listen, TCPsocket\r\n", s);
+    flg.TCPsocketConneknuty = false;
   }
 }
 
 void Task_handle_ADE9078_Code(void *arg)
 {
-
   log_i("Spustam Task ADE9078");
   ADE9078_init();
   log_i("Nacitane Signature ADE9078 ma byt podla PDF 0x40, ale aj v AWTools vraca 0x80: %X", ADE9078_GetVersion());
@@ -615,7 +630,7 @@ void Task_handle_ADE9078_Code(void *arg)
   ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_20A));
   ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_20A));
   ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_20A));
-  ADE9078_Wr32(ADDR_AIRMSOS, EEPROM.readLong(EE_Iin_offset_1));
+  ADE9078_Wr32(ADDR_AIRMSOS, 0); // EEPROM.readLong(EE_Iin_offset_1));
   ADE9078_Wr32(ADDR_BIRMSOS, EEPROM.readLong(EE_Iin_offset_2));
   ADE9078_Wr32(ADDR_CIRMSOS, EEPROM.readLong(EE_Iin_offset_3));
 
@@ -678,7 +693,7 @@ void t1_MAIN(void *arg)
 
     WebServerHandler(6);
 
-    TCP_handler(7);
+    TCP_handler(TCPsocket);
     // log_i("Task 1 loop");
     delay(10);
   }
@@ -692,9 +707,15 @@ void t2_ethTask(void *arg)
 
   while (1)
   {
-    // ESP.getFreeHeap()
-    log_i("RTOS free HeAP:%d", xPortGetFreeHeapSize());
-    delay(5000);
+    // ESP.getFreeHeap();  xPortGetFreeHeapSize()
+    log_i("RTOS free HeAP:%d", ESP.getFreeHeap());
+    if (flg.TCPsocketConneknuty == true)
+    {
+      snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\nADE9078 Data: U1 = %.03fV  U2 = %.03fV   U2 = %.03fV  I1 = %.03fA  I2 = %.03fA  I3 = %.03fA",
+               meranie.U1, meranie.U2, meranie.U3, meranie.I1, meranie.I2, meranie.I3);
+      send(TCPsocket, TX_BUF, strlen((char *)TX_BUF));
+    }
+    delay(1000);
   }
 }
 

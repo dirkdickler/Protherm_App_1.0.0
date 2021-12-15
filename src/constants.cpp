@@ -6,6 +6,7 @@
 FS *filesystem = &SPIFFS;
 VSTUP_t DIN[pocetDIN_celkovo];
 
+u8 LAN_MAC[6];
 byte mac[][NUMBER_OF_MAC] =
     {
         {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x01},

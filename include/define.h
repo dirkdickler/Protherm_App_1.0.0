@@ -15,61 +15,59 @@
 #define filterTime_DI 3     // 10ms loop
 #define filterTime_SD_CD 10 // 10ms loop
 
-#define rozsah_20A_1F  1
-#define rozsah_20A_3F  2
-#define rozsah_50A_3F  3
+#define rozsah_20A_1F 1
+#define rozsah_20A_3F 2
+#define rozsah_50A_3F 3
 #define rozsah_100A_3F 4
 
+#define TCPsocket 7
 
 #define WDT_TIMEOUT 5
 #define firmware "ver20210614_1beta"
 
 // EEPROM adrese
-#define EE_IPadresa 00              // 16bytes
-#define EE_SUBNET 16                // 16bytes
-#define EE_Brana 32                 // 16bytes
-#define EE_NazovSiete 48            // 16bytes
-#define EE_Heslosiete 64            // 20bytes
-#define EE_citacZapisuDoEEPORM 84   // 2bytes
-#define EE_citac2_ZapisuDoEEPORM 86 // 2bytes
-#define EE_dalsi 88
+#define EE_MAC_LAN 00               // 6 bytes     6+16+16+16+16+20+2+2
+#define EE_IPadresa 06              // 16 bytes  
+#define EE_SUBNET 22                // 16 bytes
+#define EE_Brana 38                 // 16 bytes
+#define EE_NazovSiete 54            // 16 bytes
+#define EE_Heslosiete 70            // 20 bytes
+#define EE_citacZapisuDoEEPORM 90   // 2 bytes
+#define EE_citac2_ZapisuDoEEPORM 92 // 2 bytes
+#define EE_dalsi 94
 
-#define EE_rozsah_Prud            99   //1byte
-#define EE_Vin_offset_1          100  //4bytes
-#define EE_Vin_gain_1            104  //4bytes
-#define EE_Vin_offset_2          108  //4bytes
-#define EE_Vin_gain_2            112  //4bytes
-#define EE_Vin_offset_3          116  //4bytes
-#define EE_Vin_gain_3            120  //4bytes
-#define EE_Iin_offset_1          124  //4bytes 
-#define EE_Iin_gain_1_20A        128  //4bytes
-#define EE_Iin_offset_2          132  //4bytes
-#define EE_Iin_gain_2_20A        136  //4bytes
-#define EE_Iin_offset_3          140  //4bytes
-#define EE_Iin_gain_3_20A        144  //4bytes
+#define EE_rozsah_Prud 99     // 1byte
+#define EE_Vin_offset_1 100   // 4bytes
+#define EE_Vin_gain_1 104     // 4bytes
+#define EE_Vin_offset_2 108   // 4bytes
+#define EE_Vin_gain_2 112     // 4bytes
+#define EE_Vin_offset_3 116   // 4bytes
+#define EE_Vin_gain_3 120     // 4bytes
+#define EE_Iin_offset_1 124   // 4bytes
+#define EE_Iin_gain_1_20A 128 // 4bytes
+#define EE_Iin_offset_2 132   // 4bytes
+#define EE_Iin_gain_2_20A 136 // 4bytes
+#define EE_Iin_offset_3 140   // 4bytes
+#define EE_Iin_gain_3_20A 144 // 4bytes
 
-#define EE_Iin_gain_1_50A        148  //4bytes
-#define EE_Iin_gain_2_50A        152  //4bytes
-#define EE_Iin_gain_3_50A        156  //4bytes
-#define EE_Iin_gain_1_100A       160  //4bytes
-#define EE_Iin_gain_2_100A       164  //4bytes
-#define EE_Iin_gain_3_100A       168  //4bytes
-
+#define EE_Iin_gain_1_50A 148  // 4bytes
+#define EE_Iin_gain_2_50A 152  // 4bytes
+#define EE_Iin_gain_3_50A 156  // 4bytes
+#define EE_Iin_gain_1_100A 160 // 4bytes
+#define EE_Iin_gain_2_100A 164 // 4bytes
+#define EE_Iin_gain_3_100A 168 // 4bytes
 
 #define EE_zacateKaret_1 200
 #define EE_zacateKaret_2 1300 // EE_zacateKaret + 100*11tj 1300
 
-
 #define DEBUG_ETHERNET_WEBSERVER_PORT Serial
 #define _ETHERNET_WEBSERVER_LOGLEVEL_ 0
 
-#define sbi(adr,bitt) (adr|=(1<<bitt))
-#define cbi(adr,bitt) (adr&=~(1<<bitt))
-#define isbit(adr,bitt) (adr &(1<<bitt))
-#define HI(ii) ( ii >> 8)
-#define LO(ii) ( ii & 0xff)
-
-
+#define sbi(adr, bitt) (adr |= (1 << bitt))
+#define cbi(adr, bitt) (adr &= ~(1 << bitt))
+#define isbit(adr, bitt) (adr & (1 << bitt))
+#define HI(ii) (ii >> 8)
+#define LO(ii) (ii & 0xff)
 
 #define USE_LITTLEFS false
 #define USE_SPIFFS true
@@ -95,7 +93,7 @@ FS *filesystem = &LITTLEFS;
 #include "FS.h"
 #include <SPIFFS.h>
 
-//FS *filesystem = &SPIFFS;
+// FS *filesystem = &SPIFFS;
 #define FileFS SPIFFS
 #define CurrentFileFS "SPIFFS"
 #endif
@@ -110,7 +108,6 @@ FS *filesystem = &LITTLEFS;
 
 #define USE_UIP_ETHERNET false
 
-
 // Only one if the following to be true
 #define USE_ETHERNET false
 #define USE_ETHERNET2 false
@@ -124,7 +121,5 @@ FS *filesystem = &LITTLEFS;
 
 // Enter a MAC address and IP address for your controller below.
 #define NUMBER_OF_MAC 20
-
-
 
 #endif // define_h

@@ -9,7 +9,7 @@
 #define	ADE9078_CS_HIGH()	          digitalWrite(ADE9078_CS, HIGH); 
 
 #define DelPomer_U 54980.872727f
-#define DelPomer_I 490025.0f
+#define DelPomer_I 636615.0f //500000.0f
 
 
 //function prototype

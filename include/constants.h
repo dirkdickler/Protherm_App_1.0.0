@@ -98,6 +98,7 @@ typedef struct
 
 typedef struct //
 {
+	bool TCPsocketConneknuty = false;
 	bool PeriodickyOdosielajZaznamyzBuffera = false;
 	bool RTCinit_done;
 	bool eth_connect;
@@ -129,8 +130,8 @@ typedef struct //
 	uint8_t byte;
 } DigitalOUT_t;
 
-
 extern VSTUP_t DIN[pocetDIN_celkovo];
+extern u8 LAN_MAC[6];
 extern byte mac[][NUMBER_OF_MAC];
 extern SEMAFOR_t semafor;
 extern FLAGS_t flg;

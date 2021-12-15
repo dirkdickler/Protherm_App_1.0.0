@@ -592,7 +592,7 @@
             var obj = JSON.parse(this.responseText);
             console.log(this.responseText);
             document.getElementById("Volt1").innerHTML = "U= " + Math.round(obj.U1 * 10) / 10 + " V";
-            document.getElementById("Prud1").innerHTML = " I= " + Math.round(obj.I1 * 100) / 100 + " A";
+            document.getElementById("Prud1").innerHTML = "I= " + Math.round(obj.I1 * 100) / 100 + " A";
           }
         };
         xhttp.open("GET", "/posliUI_20A_1F?", true);
@@ -656,7 +656,7 @@
           style="margin: 970px 273px;">Info<br>systému</button></p>
       <div class="Text_faza_V" style="left: 1100px; top: 40px; ">L1</div>
       <div class="Text_faza_V" style="top: 300px; "><span id="Volt1"> ---</span></div>
-      <div class="Text_faza_V" style="top: 600px; "><span id="Prud1"> ---</span></div>
+      <div class="Text_faza_V" style=" left: 780px; top: 600px; "><span id="Prud1"> ---</span></div>
     </div>
   </body>
 
