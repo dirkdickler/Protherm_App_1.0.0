@@ -18,8 +18,6 @@
 
 EthernetUDP Udp;
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; // buffer to hold incoming packet,
-char ReplyBuffer[] = "000102030405 ProthermEnergy";       // a string to send back
-
 
 void System_init(void)
 {
@@ -118,15 +116,16 @@ void System_init(void)
 	Ethernet.setCsPin(WIZ_CS_pin);
 	Ethernet.hardreset();
 	Ethernet.init(ETHERNET3_pocet_SOCK_NUM);
-	uint16_t index = millis() % NUMBER_OF_MAC;
-	// Use Static IP
-	// Ethernet.begin(mac[index], ip);
-	Ethernet.begin(mac[6], local_IP, subnet, gateway, primaryDNS);
-    Udp.begin(9999); // toto musi byt az po  Ethernet.begin
-	log_i("Using mac index = %u", index);
-	String slovo;
-	slovo = String(Ethernet.localIP());
-	log_i("Connected! IP address: %s", slovo);
+
+	// uint16_t index = millis() % NUMBER_OF_MAC;
+	// log_i("Using mac index = %u", index);
+
+	Ethernet.begin(LAN_MAC, local_IP, subnet, gateway, primaryDNS);
+	Udp.begin(9999); // toto musi byt az po  Ethernet.begin
+
+	// String slovo;
+	// slovo = String(Ethernet.localIP());
+	// log_i("Connected! IP address: %s", slovo);
 
 	log_i("Konec funkcie..");
 }
@@ -227,34 +226,34 @@ int8_t NacitajEEPROM_setting(void)
 
 	log_i("Succes to initialise EEPROM");
 
-	//EEPROM.writeString(EE_NazovSiete, "zadels\0");
-	//EEPROM.writeLong(EE_Vin_gain_1,123);
-	//EEPROM.commit();
-	//EEPROM.readString(EE_NazovSiete, NazovSiete, 16);
-	
+	// EEPROM.writeString(EE_NazovSiete, "zadels\0");
+	// EEPROM.writeLong(EE_Vin_gain_1,123);
+	// EEPROM.commit();
+	// EEPROM.readString(EE_NazovSiete, NazovSiete, 16);
+
 	log_i("EEPROM nacitany rozsah: %u", EEPROM.readByte(EE_rozsah_Prud));
-    
+
 	String slovo;
-	slovo = String(EEPROM.readString(EE_NazovSiete));//, NazovSiete,16);//String(Ethernet.localIP());
+	slovo = String(EEPROM.readString(EE_NazovSiete)); //, NazovSiete,16);//String(Ethernet.localIP());
 	log_i("EEPROM nazov siete je vycitane: %s", slovo);
-	//EEPROM.readBytes(EE_NazovSiete, NazovSiete, 16);
+	EEPROM.readBytes(EE_MAC_LAN, LAN_MAC, 6);
 
 	if (NazovSiete[0] != 0xff) // ak mas novy modul tak EEPROM vrati prazdne hodnoty, preto ich neprepisem z EEPROM, ale necham default
 	{
-		String apipch = EEPROM.readString(EE_IPadresa); // "192.168.1.11";
-		local_IP = str2IP(apipch);
+		// String apipch = EEPROM.readString(EE_IPadresa); // "192.168.1.11";
+		// local_IP = str2IP(apipch);
 
-		apipch = EEPROM.readString(EE_SUBNET);
-		subnet = str2IP(apipch);
+		// apipch = EEPROM.readString(EE_SUBNET);
+		// subnet = str2IP(apipch);
 
-		apipch = EEPROM.readString(EE_Brana);
-		gateway = str2IP(apipch);
+		// apipch = EEPROM.readString(EE_Brana);
+		// gateway = str2IP(apipch);
 
-		memset(NazovSiete, 0, sizeof(NazovSiete));
-		memset(Heslo, 0, sizeof(Heslo));
-		u8 dd = EEPROM.readBytes(EE_NazovSiete, NazovSiete, 16);
-		u8 ww = EEPROM.readBytes(EE_Heslosiete, Heslo, 20);
-		log_i("Nacitany nazov siete a heslo z EEPROM: %s  a %s\r\n", NazovSiete, Heslo);
+		// memset(NazovSiete, 0, sizeof(NazovSiete));
+		// memset(Heslo, 0, sizeof(Heslo));
+		// u8 dd = EEPROM.readBytes(EE_NazovSiete, NazovSiete, 16);
+		// u8 ww = EEPROM.readBytes(EE_Heslosiete, Heslo, 20);
+		// log_i("Nacitany nazov siete a heslo z EEPROM: %s  a %s\r\n", NazovSiete, Heslo);
 		return 0;
 	}
 	else
@@ -298,10 +297,10 @@ IPAddress str2IP(String str)
 	return ret;
 }
 
-
-
 void UDPhandler(void)
 {
+	char ReplyBuffer[60] = "________ProthermEnergy\0";
+
 	int packetSize = Udp.parsePacket();
 	if (packetSize)
 	{
@@ -327,7 +326,17 @@ void UDPhandler(void)
 
 		// send a reply, to the IP address and port that sent us the packet we received
 		Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
-		Udp.write(ReplyBuffer);
+
+		for (u8 i = 0; i < 6; i++)
+		{
+			ReplyBuffer[i] = LAN_MAC[i];
+		}
+
+		// snprintf(ReplyBuffer, sizeof(ReplyBuffer), "%x%x%x%x%x%x SProthermEnergw",
+		// 		 LAN_MAC[0], LAN_MAC[1], LAN_MAC[2], LAN_MAC[3], LAN_MAC[4], LAN_MAC[5]);
+		// log_i("Toto le replybuffer:%s",ReplyBuffer);
+
+		Udp.write(ReplyBuffer,22);  //tu musis mat kolko poslat, lebo ak mas MAC zacinajucu 0 tak to bere jak strring a naposle to
 		Udp.endPacket();
 	}
 }
