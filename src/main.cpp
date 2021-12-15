@@ -361,7 +361,14 @@ void WebServerHandler(u8 s)
       else if (!strncmp((char *)TX_BUF, "GET /status", 11) || !strncmp((char *)TX_BUF, "GET /status", 11))
       {
         log_i("Super stranky zadaju MAIN");
-        zobraz_stranky(s, LenzobrazIP_html);
+        
+        char www[120];
+        char eee[] = "vole";
+        char rrr[] = "ako sa";
+        char ttt[] = "mas sulku";
+        snprintf(www,sizeof(www)," %X:%X:%X:%X:%X:%X",LAN_MAC[0],LAN_MAC[1],LAN_MAC[2],LAN_MAC[3],LAN_MAC[4],LAN_MAC[5] );
+        snprintf((char *)TX_BUF, sizeof(TX_BUF), Page_HTML_popisSystemu, www, eee, rrr, ttt, NazovSiete);
+        zobraz_stranky(s, (char *)TX_BUF);
       }
       else if (!strncmp((char *)TX_BUF, "GET /get?", 9) || !strncmp((char *)TX_BUF, "get /get?", 9))
       {

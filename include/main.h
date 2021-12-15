@@ -110,7 +110,7 @@ extern JSONVar myObject2, ObjDatumCas, ObjTopeni, JSON_DebugMsg;
 extern LOGBUFF_t LogBuffer;
 extern bool Internet_CasDostupny;
 extern bool RTC_cas_OK;
-extern char TX_BUFF[];
+//extern char TX_BUFF[];
 extern u16 AN_Pot1_Raw;
 //extern PCF8563_Class PCFrtc;
 
