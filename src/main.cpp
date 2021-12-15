@@ -355,6 +355,11 @@ void WebServerHandler(u8 s)
         log_i("Super stranky zadaju MAIN");
         zobraz_stranky(s, DebugLog_html);
       }
+      else if (!strncmp((char *)TX_BUF, "GET /status", 11) || !strncmp((char *)TX_BUF, "GET /status", 11))
+      {
+        log_i("Super stranky zadaju MAIN");
+        zobraz_stranky(s, LenzobrazIP_html);
+      }
       else if (!strncmp((char *)TX_BUF, "GET /get?", 9) || !strncmp((char *)TX_BUF, "get /get?", 9))
       {
         // log_i("Super stranky zadaju GEY AJAX s det?");
@@ -407,8 +412,8 @@ void WebServerHandler(u8 s)
       {
         log_i("Super stranky zadaju GEY AJAX s 20A 1F");
         citac += 0.01f;
-        AjaxObjekt["U1"] = String(citac);
-        AjaxObjekt["I1"] = String(citac + 10.11);
+        AjaxObjekt["U1"] = String(meranie.U1);
+        AjaxObjekt["I1"] = String(meranie.I1);
         jsonString = JSON.stringify(AjaxObjekt);
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
         zobraz_stranky(s, (const char *)TX_BUF);
@@ -420,12 +425,12 @@ void WebServerHandler(u8 s)
       {
         log_i("Super stranky zadaju GEY AJAX s 20A az 100A  3F");
         citac += 0.01f;
-        AjaxObjekt["U1"] = String(citac);         // meranie.U1;
-        AjaxObjekt["I1"] = String(citac + 10.11); // meranie.I1;
-        AjaxObjekt["U2"] = String(citac);         // meranie.U2;
-        AjaxObjekt["I2"] = String(citac + 20.11); // meranie.I2;
-        AjaxObjekt["U3"] = String(citac);         // meranie.U3;
-        AjaxObjekt["I3"] = String(citac + 20.11); // meranie.I3;
+        AjaxObjekt["U1"] = String(meranie.U1); 
+        AjaxObjekt["I1"] = String(meranie.I1); 
+        AjaxObjekt["U2"] = String(meranie.U2); 
+        AjaxObjekt["I2"] = String(meranie.I2); 
+        AjaxObjekt["U3"] = String(meranie.U3); 
+        AjaxObjekt["I3"] = String(meranie.I3); 
         jsonString = JSON.stringify(AjaxObjekt);
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
         zobraz_stranky(s, (const char *)TX_BUF);
