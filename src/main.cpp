@@ -422,7 +422,7 @@ void WebServerHandler(u8 s)
       {
         log_i("Super stranky zadaju GEY AJAX s 20A 1F");
         citac += 0.01f;
-        AjaxObjekt["U1"] = String(meranie.U1);
+        AjaxObjekt["U1"] = String(citac);//String(meranie.U1);
         AjaxObjekt["I1"] = String(meranie.I1);
         jsonString = JSON.stringify(AjaxObjekt);
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
@@ -435,7 +435,7 @@ void WebServerHandler(u8 s)
       {
         log_i("Super stranky zadaju GEY AJAX s 20A az 100A  3F");
         citac += 0.01f;
-        AjaxObjekt["U1"] = String(meranie.U1);
+        AjaxObjekt["U1"] = String(citac);//String(meranie.U1);
         AjaxObjekt["I1"] = String(meranie.I1);
         AjaxObjekt["U2"] = String(meranie.U2);
         AjaxObjekt["I2"] = String(meranie.I2);

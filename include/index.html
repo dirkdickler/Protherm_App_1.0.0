@@ -552,11 +552,11 @@
     <style>
       html,
       body {
-        width: 1920px;
-        height: 1080px;
+        width: 1905px;
+        height: 1010px;
         margin: 0;
         padding: 0;
-        background-color: green;
+        background-color: rgb(0, 0, 0);
       }
 
       #container {
@@ -564,7 +564,7 @@
         height: inherit;
         margin: 0;
         padding: 0;
-        background-color: rgb(43, 42, 42);
+        background-color: rgb(0, 0, 0);
       }
 
       h1 {
@@ -602,7 +602,7 @@
 
     <script>
 
-      setInterval(function () {
+      const myInterval = setInterval(function () {
         console.log('Timer bude posial Ajax');
         getData();
 
@@ -628,30 +628,29 @@
 
         if (rt == 10) { console.log('My func 1 - odosielam OnOFF_Zavlahu'); websocket.send('OnOFF_Zavlahu'); }
         else if (rt == 1) {
+          clearInterval(myInterval);
           console.log('My func 1');
           window.location.assign("/meraj20A_1F");
         }
         else if (rt == 2) {
+          clearInterval(myInterval);
           console.log('My func 2');
           window.location.assign("/meraj20A_3F");
         }
         else if (rt == 3) {
+          clearInterval(myInterval);
           console.log('My func 3');
           window.location.assign("/meraj50A_3F");
         }
         else if (rt == 4) {
+          clearInterval(myInterval);
           console.log('My func 4');
           window.location.assign("/meraj100A_3F");
         }
-        else if (rt == 5) { window.location.assign("/hlavne"); }
-        else if (rt == 6) { window.location.assign("/status"); }
-        else if (rt == 7) { window.location.assign("/NastavVentil?ventil=6"); }
-        else if (rt == 22) {
-          window.location.assign("/NastavVentil?param1=3");
-          //websocket.send ('ZaluzieZatvorVsetky');
+        else if (rt == 5) {
+          clearInterval(myInterval);
+          window.location.assign("/hlavne");
         }
-
-        else if (rt == 100) { window.location.assign("/"); }
       }
     </script>
 
@@ -660,23 +659,23 @@
   <body>
     <div id="container">
       <!--<h1>Hello Worldf</h1>-->
-      <p><button onclick="myFunction(1)" id='button1' class="fixedbtn"
+      <p><button ontouchstart="myFunction(1)" id='button1' class="fixedbtn"
           style="margin: 30px 00px 00px 10px; background-color: rgb(18, 224, 18); ">Meranie<br>1x230V
           (20A)</button></p>
-      <p><button onclick="myFunction(2)" id='button2' class="fixedbtn"
+      <p><button ontouchstart="myFunction(2)" id='button2' class="fixedbtn"
           style="margin: 270px 10px 0px 10px;">Meranie<br>3x230V
           (20A)</button></p>
-      <p><button onclick="myFunction(3)" id='button3' class="fixedbtn"
+      <p><button ontouchstart="myFunction(3)" id='button3' class="fixedbtn"
           style="margin: 500px 10px 0px 10px; ">Meranie<br>3x230V
           (50A)</button></p>
-      <p><button onclick="myFunction(4)" id='button4' class="fixedbtn"
+      <p><button ontouchstart="myFunction(4)" id='button4' class="fixedbtn"
           style="margin: 740px 10px 0px 10px;">Meranie<br>3x230V
           (100A)</button></p>
 
-      <p><button onclick="myFunction(5)" id='button5' class="malybtn" style="margin: 970px 10px 0px 10px;">Pokračuj
+      <p><button ontouchstart="myFunction(5)" id='button5' class="malybtn" style="margin: 890px 10px;">Pokračuj
           v<br>meraní</button></p>
-      <p><button onclick="myFunction(6)" id='button6' class="malybtn"
-          style="margin: 970px 273px;">Info<br>systému</button></p>
+      <!--<p><button onclick="myFunction(6)" id='button6' class="malybtn"
+          style="margin: 860px 273px;">Info<br>systému</button></p>-->
       <div class="Text_faza_V" style="left: 1100px; top: 40px; ">L1</div>
       <div class="Text_faza_V" style="top: 300px; "><span id="Volt1"> ---</span></div>
       <div class="Text_faza_V" style=" left: 780px; top: 600px; "><span id="Prud1"> ---</span></div>
@@ -696,11 +695,11 @@
     <style>
       html,
       body {
-        width: 1920px;
-        height: 1080px;
+        width: 1905px;
+        height: 1010px;
         margin: 0;
         padding: 0;
-        background-color: green;
+        background-color: rgb(0, 0, 0);
       }
 
       #container {
@@ -708,7 +707,7 @@
         height: inherit;
         margin: 0;
         padding: 0;
-        background-color: rgb(43, 42, 42);
+        background-color: rgb(0, 0, 0);
       }
 
       h1 {
@@ -739,18 +738,18 @@
         position: fixed;
         font-size: 123px;
         color: white;
-        left: 550px;
+        left: 480px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
     </style>
 
     <script>
 
-      setInterval(function () {
+      const myInterval = setInterval(function () {
         console.log('Timer bude posial Ajax');
         getData();
-
       }, 900);
+
 
       function getData() {
         var xhttp = new XMLHttpRequest();
@@ -777,31 +776,31 @@
 
         if (rt == 10) { console.log('My func 1 - odosielam OnOFF_Zavlahu'); websocket.send('OnOFF_Zavlahu'); }
         else if (rt == 1) {
+          clearInterval(myInterval);
           console.log('My func 1');
           window.location.assign("/meraj20A_1F");
         }
         else if (rt == 2) {
+          clearInterval(myInterval);
           console.log('My func 2');
           window.location.assign("/meraj20A_3F");
         }
         else if (rt == 3) {
+          clearInterval(myInterval);
           console.log('My func 3');
           window.location.assign("/meraj50A_3F");
         }
         else if (rt == 4) {
+          clearInterval(myInterval);
           console.log('My func 4');
           window.location.assign("/meraj100A_3F");
         }
-        else if (rt == 5) { window.location.assign("/hlavne"); }
-        else if (rt == 6) { window.location.assign("/status"); }
-        else if (rt == 7) { window.location.assign("/NastavVentil?ventil=6"); }
-        else if (rt == 22) {
-          window.location.assign("/NastavVentil?param1=3");
-          //websocket.send ('ZaluzieZatvorVsetky');
+        else if (rt == 5) {
+          clearInterval(myInterval);
+          window.location.assign("/hlavne");
         }
-
-        else if (rt == 100) { window.location.assign("/"); }
       }
+
     </script>
 
   </head>
@@ -809,31 +808,31 @@
   <body>
     <div id="container">
       <!--<h1>Hello Worldf</h1>-->
-      <p><button onclick="myFunction(1)" id='button1' class="fixedbtn"
-          style="margin: 30px 00px 00px 10px;  ">Meranie<br>1x230V
+      <p><button ontouchstart="myFunction(1)" id='button1' class="fixedbtn"
+          style="margin: 30px 10px;  ">Meranie<br>1x230V
           (20A)</button></p>
-      <p><button onclick="myFunction(2)" id='button2' class="fixedbtn"
-          style="margin: 270px 10px 0px 10px; background-color: rgb(18, 224, 18); ">Meranie<br>3x230V
+      <p><button ontouchstart="myFunction(2)" id='button2' class="fixedbtn"
+          style="margin: 240px 10px; background-color: rgb(18, 224, 18); ">Meranie<br>3x230V
           (20A)</button></p>
-      <p><button onclick="myFunction(3)" id='button3' class="fixedbtn"
-          style="margin: 500px 10px 0px 10px; ">Meranie<br>3x230V
+      <p><button ontouchstart="myFunction(3)" id='button3' class="fixedbtn"
+          style="margin: 450px 10px; ">Meranie<br>3x230V
           (50A)</button></p>
-      <p><button onclick="myFunction(4)" id='button4' class="fixedbtn"
-          style="margin: 740px 10px 0px 10px;">Meranie<br>3x230V
+      <p><button ontouchstart="myFunction(4)" id='button4' class="fixedbtn"
+          style="margin: 660px 10px;">Meranie<br>3x230V
           (100A)</button></p>
 
-      <p><button onclick="myFunction(5)" id='button5' class="malybtn" style="margin: 970px 10px 0px 10px;">Pokračuj
+      <p><button ontouchstart="myFunction(5)" id='button5' class="malybtn" style="margin: 860px 10px;">Pokračuj
           v<br>meraní</button></p>
-      <p><button onclick="myFunction(6)" id='button6' class="malybtn"
-          style="margin: 970px 273px;">Info<br>systému</button></p>
+      <!--<p><button onclick="myFunction(6)" id='button6' class="malybtn"
+          style="margin: 860px 273px;">Info<br>systému</button></p>-->
 
-      <div class="Text_faza_V" style="top: 100px; "><span id="Volt1">L1: ---</span></div>
-      <div class="Text_faza_V" style="top: 450px; "><span id="Volt2">L2: ---</span></div>
-      <div class="Text_faza_V" style="top: 810px; "><span id="Volt3">L3: ---</span></div>
+      <div class="Text_faza_V" style="top: 70px; "><span id="Volt1">L1: 230.1 V</span></div>
+      <div class="Text_faza_V" style="top: 355px; "><span id="Volt2">L2: ---</span></div>
+      <div class="Text_faza_V" style="top: 640px; "><span id="Volt3">L3: ---</span></div>
 
-      <div class="Text_faza_V" style="top: 100px; left: 1320px;"><span id="Prud1">---</span></div>
-      <div class="Text_faza_V" style="top: 450px; left: 1320px;"><span id="Prud2">---</span></div>
-      <div class="Text_faza_V" style="top: 810px; left: 1320px;"><span id="Prud3">---</span></div>
+      <div class="Text_faza_V" style="top: 70px; left: 1280px;"><span id="Prud1">100.23 A</span></div>
+      <div class="Text_faza_V" style="top: 355px; left: 1280px;"><span id="Prud2">---</span></div>
+      <div class="Text_faza_V" style="top: 640px; left: 1280px;"><span id="Prud3">---</span></div>
     </div>
   </body>
 
