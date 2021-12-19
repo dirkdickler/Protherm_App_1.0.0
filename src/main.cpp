@@ -310,7 +310,7 @@ void WebServerHandler(u8 s)
 {
   char loc_buff[200];
   uint8_t st = w5500.readSnSR(s);
-  if (st == 0x17) // establiset
+  if (st == SnSR::ESTABLISHED) //0x17 establiset
   {
     uint16_t size;
     size = w5500.getRXReceivedSize(s);
@@ -325,33 +325,35 @@ void WebServerHandler(u8 s)
       if (!strncmp((char *)TX_BUF, "GET /hlavne", 11) || !strncmp((char *)TX_BUF, "get /hlavne", 11))
       {
         log_i("Super stranky zadaju HLAVNE");
-        u8 coSAMera = EEPROM.readByte(EE_rozsah_Prud);
-        if (coSAMera == rozsah_20A_1F)
-        {
-          log_i("A to na Rozsah 1F 20A");
-          zobraz_stranky(s, page_rozsah_20A_1F);
-        }
-        else if (coSAMera == rozsah_20A_3F)
-        {
-          log_i("A to na Rozsah 3F 20A");
-          zobraz_stranky(s, page_rozsah_20A_3F);
-        }
-        else if (coSAMera == rozsah_50A_3F)
-        {
-          log_i("A to na Rozsah 3F 50A");
-          zobraz_stranky(s, page_rozsah_50A_3F);
-        }
-        else if (coSAMera == rozsah_100A_3F)
-        {
-          log_i("A to na Rozsah 3F 100A");
-          zobraz_stranky(s, page_rozsah_100A_3F);
-        }
-        else
-        {
-          log_i("Chyba lebo v EEPROM na adrese EE_rozsah_Prud je ulezeno %u", coSAMera);
-          log_i("Tak davam vychoziu strnaku 20A 1F");
-          zobraz_stranky(s, page_rozsah_20A_1F);
-        }
+        zobraz_stranky(s, page_hlavna );//page_rozsah_20A_1F);
+        
+        // u8 coSAMera = EEPROM.readByte(EE_rozsah_Prud);
+        // if (coSAMera == rozsah_20A_1F)
+        // {
+        //   log_i("A to na Rozsah 1F 20A");
+        //   zobraz_stranky(s, page_hlavna );//page_rozsah_20A_1F);
+        // }
+        // else if (coSAMera == rozsah_20A_3F)
+        // {
+        //   log_i("A to na Rozsah 3F 20A");
+        //   zobraz_stranky(s, page_hlavna); //page_rozsah_20A_3F);
+        // }
+        // else if (coSAMera == rozsah_50A_3F)
+        // {
+        //   log_i("A to na Rozsah 3F 50A");
+        //   zobraz_stranky(s, page_rozsah_50A_3F);
+        // }
+        // else if (coSAMera == rozsah_100A_3F)
+        // {
+        //   log_i("A to na Rozsah 3F 100A");
+        //   zobraz_stranky(s, page_rozsah_100A_3F);
+        // }
+        // else
+        // {
+        //   log_i("Chyba lebo v EEPROM na adrese EE_rozsah_Prud je ulezeno %u", coSAMera);
+        //   log_i("Tak davam vychoziu strnaku 20A 1F");
+        //   zobraz_stranky(s, page_rozsah_20A_1F);
+        // }
       }
       else if (!strncmp((char *)TX_BUF, "GET /main", 9) || !strncmp((char *)TX_BUF, "get /main", 9))
       {
@@ -380,12 +382,14 @@ void WebServerHandler(u8 s)
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
         zobraz_stranky(s, (const char *)TX_BUF);
       }
+      
       else if (!strncmp((char *)TX_BUF, "GET /meraj20A_1F", 16))
       {
         log_i("Super stranky zadaju Meraj 20A 1F");
-        zobraz_stranky(s, page_rozsah_20A_1F);
-        EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_1F);
-        EEPROM.commit();
+         zobraz_stranky(s, page_hlavna );
+         //zobraz_stranky(s, page_rozsah_20A_1F);
+       // EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_1F);
+        //EEPROM.commit();
         ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_20A));
         ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_20A));
         ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_20A));
@@ -393,9 +397,10 @@ void WebServerHandler(u8 s)
       else if (!strncmp((char *)TX_BUF, "GET /meraj20A_3F", 16))
       {
         log_i("Super stranky zadaju Meraj 20A 3F");
-        zobraz_stranky(s, page_rozsah_20A_3F);
-        EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_3F);
-        EEPROM.commit();
+        zobraz_stranky(s, page_hlavna );
+        //zobraz_stranky(s, page_rozsah_20A_3F);
+        //EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_3F);
+        //EEPROM.commit();
         ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_50A));
         ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_50A));
         ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_50A));
@@ -403,16 +408,17 @@ void WebServerHandler(u8 s)
       else if (!strncmp((char *)TX_BUF, "GET /meraj50A_3F", 16))
       {
         log_i("Super stranky zadaju Meraj 50A 3F");
-        zobraz_stranky(s, page_rozsah_50A_3F);
-        EEPROM.writeByte(EE_rozsah_Prud, rozsah_50A_3F);
-        EEPROM.commit();
+         zobraz_stranky(s, page_hlavna );
+         //zobraz_stranky(s, page_rozsah_50A_3F);
+       // EEPROM.writeByte(EE_rozsah_Prud, rozsah_50A_3F);
+        //EEPROM.commit();
       }
       else if (!strncmp((char *)TX_BUF, "GET /meraj100A_3F", 16))
       {
         log_i("Super stranky zadaju Meraj 100A 3F");
-        zobraz_stranky(s, page_rozsah_100A_3F);
-        EEPROM.writeByte(EE_rozsah_Prud, rozsah_100A_3F);
-        EEPROM.commit();
+        zobraz_stranky(s, page_hlavna );//zobraz_stranky(s, page_rozsah_100A_3F);
+        //EEPROM.writeByte(EE_rozsah_Prud, rozsah_100A_3F);
+       // EEPROM.commit();
         ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_100A));
         ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_100A));
         ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_100A));
@@ -429,11 +435,10 @@ void WebServerHandler(u8 s)
         zobraz_stranky(s, (const char *)TX_BUF);
       }
 
-      else if (!strncmp((char *)TX_BUF, "GET /posliUI_20A_3F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_20A_3F?", 20) ||
-               strncmp((char *)TX_BUF, "GET /posliUI_50A_3F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_50A_3F?", 20) ||
-               strncmp((char *)TX_BUF, "GET /posliUI_100A_3F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_100A_3F?", 20))
+
+      else if (!strncmp((char *)TX_BUF, "GET /posliUI_data", 17) || !strncmp((char *)TX_BUF, "get /posliUI_data", 17))
       {
-        log_i("Super stranky zadaju GEY AJAX s 20A az 100A  3F");
+        log_i("Super stranky zadaju GET AJAX s posliUI_data");
         citac += 0.01f;
         AjaxObjekt["U1"] = String(citac);//String(meranie.U1);
         AjaxObjekt["I1"] = String(meranie.I1);
@@ -445,22 +450,22 @@ void WebServerHandler(u8 s)
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
         zobraz_stranky(s, (const char *)TX_BUF);
       }
-      delay(100);
+      delay(10);
       disconnect(s);
     }
   }
 
-  else if (st == 0x1c) // SOCK_CLOSE_WAIT
+  else if (st == SnSR::CLOSE_WAIT ) //0x1c  SOCK_CLOSE_WAIT
   {
-    disconnect(6);
+    disconnect(s);
   }
-  else if (st == 0x00) // SOCK_CLOSED
+  else if (st == SnSR::CLOSED ) //  0x00 SOCK_CLOSED
   {
-    socket(6, 1, 80, 0x00);
+    socket(s, 1, 80, 0x00);
   }
-  else if (st == 0x13) // SOCK_Init
+  else if (st == SnSR::INIT) //  0x13 SOCK_Init
   {
-    listen(6);
+    listen(s);
   }
 }
 

@@ -382,7 +382,7 @@
   )rawliteral";
 
 
-  const char page_hlavne[] = R"rawliteral(
+  const char page_zalohahlavneeee[] = R"rawliteral(
   <!DOCTYPE html>
   <html>
 
@@ -1091,6 +1091,184 @@
       <div class="Text_faza_V" style="top: 100px; left: 1320px;"><span id="Prud1">---</span></div>
       <div class="Text_faza_V" style="top: 450px; left: 1320px;"><span id="Prud2">---</span></div>
       <div class="Text_faza_V" style="top: 810px; left: 1320px;"><span id="Prud3">---</span></div>
+    </div>
+  </body>
+
+  </html>
+  )rawliteral";
+
+
+  const char page_hlavna[] = R"rawliteral(
+  <!DOCTYPE html>
+  <html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Meranie Rozsahu 20A 3 f</title>
+    <style>
+      html,
+      body {
+        width: 1905px;
+        height: 1010px;
+        margin: 0;
+        padding: 0;
+        background-color: rgb(0, 0, 0);
+      }
+
+      #container {
+        width: inherit;
+        height: inherit;
+        margin: 0;
+        padding: 0;
+        background-color: rgb(0, 0, 0);
+      }
+
+      h1 {
+        margin: 0;
+        padding: 0;
+      }
+
+
+      .fixedbtn {
+        position: fixed;
+        width: 18%;
+        height: 15%;
+        font-size: 23px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(255, 255, 255);
+      }
+
+      .malybtn {
+        position: fixed;
+        width: 225px;
+        height: 100px;
+        font-size: 18px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(255, 255, 255);
+      }
+
+      .Text_faza_V {
+        position: fixed;
+        font-size: 123px;
+        color: white;
+        left: 480px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+    </style>
+
+    <script>
+      const myInterval = setInterval(function () {
+        console.log('Timer bude posial Ajax');
+        getData();
+      }, 900);
+
+
+      function getData() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            var obj = JSON.parse(this.responseText);
+            //console.log(this.responseText);
+
+            document.getElementById("Volt1").innerHTML = "L1: " + Math.round(obj.U1 * 10) / 10 + " V";
+            document.getElementById("Prud1").innerHTML = Math.round(obj.I1 * 100) / 100 + " A";
+            document.getElementById("Volt2").innerHTML = "L2: " + Math.round(obj.U2 * 10) / 10 + " V";
+            document.getElementById("Prud2").innerHTML = Math.round(obj.I2 * 100) / 100 + " A";
+            document.getElementById("Volt3").innerHTML = "L3: " + Math.round(obj.U3 * 10) / 10 + " V";
+            document.getElementById("Prud3").innerHTML = Math.round(obj.I3 * 100) / 100 + " A";
+          }
+        };
+        xhttp.open("GET", "/posliUI_data", true);
+        xhttp.send();
+      }
+
+      function myFunction(rt) {
+
+        var xhttp = new XMLHttpRequest();
+        console.log('[myFunction (rt)] Button ma param:' + rt);
+
+        if (rt == 1) {
+          console.log('My func 1');
+          //clearInterval(myInterval);
+          //window.location.assign("/meraj20A_1F");
+          xhttp.open("GET", "/meraj20A_1F", true);
+          xhttp.send();
+          document.getElementById("button1").style.background = "rgb(18, 224, 18)";
+          document.getElementById("button2").style.background = "white";
+          document.getElementById("button3").style.background = "white";
+          document.getElementById("button4").style.background = "white";
+          setInterval(myInterval,1000);
+          //background-color: rgb(18, 224, 18);
+
+        }
+        else if (rt == 2) {
+          console.log('My func 2');
+          //window.location.assign("/meraj20A_3F");
+          xhttp.open("GET", "/meraj20A_3F", true);
+          xhttp.send();
+          document.getElementById("button2").style.background = "rgb(18, 224, 18)";
+          document.getElementById("button1").style.background = "white";
+          document.getElementById("button3").style.background = "white";
+          document.getElementById("button4").style.background = "white";
+        }
+        else if (rt == 3) {
+          //clearInterval(myInterval);
+          console.log('My func 3');
+          //window.location.assign("/meraj50A_3F");
+          xhttp.open("GET", "/meraj50A_3F", true);
+          xhttp.send();
+          document.getElementById("button3").style.background = "rgb(18, 224, 18)";
+          document.getElementById("button1").style.background = "white";
+          document.getElementById("button2").style.background = "white";
+          document.getElementById("button4").style.background = "white";
+        }
+        else if (rt == 4) {
+          // clearInterval(myInterval);
+          console.log('My func 4');
+          //window.location.assign("/meraj100A_3F");
+          xhttp.open("GET", "/meraj100A_3F", true);
+          xhttp.send();
+          document.getElementById("button4").style.background = "rgb(18, 224, 18)";
+          document.getElementById("button1").style.background = "white";
+          document.getElementById("button2").style.background = "white";
+          document.getElementById("button3").style.background = "white";
+          setInterval(myInterval,200);
+        }
+        else if (rt == 5) {
+          // clearInterval(myInterval);
+          window.location.assign("/hlavne");
+        }
+      }
+
+    </script>
+
+  </head>
+
+  <body>
+    <div id="container">
+      <!--<h1>Hello Worldf</h1>-->
+
+      <p><button onclick="myFunction(1)" id='button1' class="fixedbtn" style="margin: 30px 10px;">Meranie<br>1x230T
+          (20A)</button></p>
+      <p><button onclick="myFunction(2)" id='button2' class="fixedbtn" style="margin: 240px 10px;">Meranie<br>3x230V
+          (20A)</button></p>
+      <p><button onclick="myFunction(3)" id='button3' class="fixedbtn" style="margin: 450px 10px;">Meranie<br>3x230V
+          (50A)</button></p>
+      <p><button onclick="myFunction(4)" id='button4' class="fixedbtn" style="margin: 660px 10px;">Meranie<br>3x230V
+          (100A)</button></p>
+
+      <p><button onclick="myFunction(5)" id='button5' class="malybtn" style="margin: 860px 10px;">Pokračuj
+          v<br>meraní</button></p>
+      <!--<p><button onclick="myFunction(6)" id='button6' class="malybtn"
+          style="margin: 860px 273px;">Info<br>systému</button></p>-->
+
+      <div class="Text_faza_V" style="top: 70px; "><span id="Volt1">L1: ---V</span></div>
+      <div class="Text_faza_V" style="top: 355px; "><span id="Volt2">L2: ---</span></div>
+      <div class="Text_faza_V" style="top: 640px; "><span id="Volt3">L3: ---</span></div>
+
+      <div class="Text_faza_V" style="top: 70px; left: 1280px;"><span id="Prud1">---</span></div>
+      <div class="Text_faza_V" style="top: 355px; left: 1280px;"><span id="Prud2">---</span></div>
+      <div class="Text_faza_V" style="top: 640px; left: 1280px;"><span id="Prud3">---</span></div>
     </div>
   </body>
 
