@@ -55,7 +55,6 @@ float citac = 0;
 void Loop_10ms()
 {
   citac++;
-  citac++;
 }
 
 void handleNotFound()
@@ -325,35 +324,7 @@ void WebServerHandler(u8 s)
       if (!strncmp((char *)TX_BUF, "GET /hlavne", 11) || !strncmp((char *)TX_BUF, "get /hlavne", 11))
       {
         log_i("Super stranky zadaju HLAVNE");
-        zobraz_stranky(s, page_hlavna );//page_rozsah_20A_1F);
-        
-        // u8 coSAMera = EEPROM.readByte(EE_rozsah_Prud);
-        // if (coSAMera == rozsah_20A_1F)
-        // {
-        //   log_i("A to na Rozsah 1F 20A");
-        //   zobraz_stranky(s, page_hlavna );//page_rozsah_20A_1F);
-        // }
-        // else if (coSAMera == rozsah_20A_3F)
-        // {
-        //   log_i("A to na Rozsah 3F 20A");
-        //   zobraz_stranky(s, page_hlavna); //page_rozsah_20A_3F);
-        // }
-        // else if (coSAMera == rozsah_50A_3F)
-        // {
-        //   log_i("A to na Rozsah 3F 50A");
-        //   zobraz_stranky(s, page_rozsah_50A_3F);
-        // }
-        // else if (coSAMera == rozsah_100A_3F)
-        // {
-        //   log_i("A to na Rozsah 3F 100A");
-        //   zobraz_stranky(s, page_rozsah_100A_3F);
-        // }
-        // else
-        // {
-        //   log_i("Chyba lebo v EEPROM na adrese EE_rozsah_Prud je ulezeno %u", coSAMera);
-        //   log_i("Tak davam vychoziu strnaku 20A 1F");
-        //   zobraz_stranky(s, page_rozsah_20A_1F);
-        // }
+        zobraz_stranky(s, page_hlavna );
       }
       else if (!strncmp((char *)TX_BUF, "GET /main", 9) || !strncmp((char *)TX_BUF, "get /main", 9))
       {
@@ -441,7 +412,7 @@ void WebServerHandler(u8 s)
         log_i("Super stranky zadaju GET AJAX s posliUI_data");
         citac += 0.01f;
         AjaxObjekt["U1"] = String(citac);//String(meranie.U1);
-        AjaxObjekt["I1"] = String(meranie.I1);
+        AjaxObjekt["I1"] = String(citac); //String(meranie.I1);
         AjaxObjekt["U2"] = String(meranie.U2);
         AjaxObjekt["I2"] = String(meranie.I2);
         AjaxObjekt["U3"] = String(meranie.U3);
