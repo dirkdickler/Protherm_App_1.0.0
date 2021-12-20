@@ -309,7 +309,7 @@ void WebServerHandler(u8 s)
 {
   char loc_buff[200];
   uint8_t st = w5500.readSnSR(s);
-  if (st == SnSR::ESTABLISHED) //0x17 establiset
+  if (st == SnSR::ESTABLISHED) // 0x17 establiset
   {
     uint16_t size;
     size = w5500.getRXReceivedSize(s);
@@ -324,7 +324,7 @@ void WebServerHandler(u8 s)
       if (!strncmp((char *)TX_BUF, "GET /hlavne", 11) || !strncmp((char *)TX_BUF, "get /hlavne", 11))
       {
         log_i("Super stranky zadaju HLAVNE");
-        zobraz_stranky(s, page_hlavna );
+        zobraz_stranky(s, page_hlavna);
       }
       else if (!strncmp((char *)TX_BUF, "GET /main", 9) || !strncmp((char *)TX_BUF, "get /main", 9))
       {
@@ -333,14 +333,15 @@ void WebServerHandler(u8 s)
       }
       else if (!strncmp((char *)TX_BUF, "GET /status", 11) || !strncmp((char *)TX_BUF, "GET /status", 11))
       {
-        log_i("Super stranky zadaju MAIN");
-        
+        log_i("Bwowser ziada /STATUS");
+
         char www[120];
-        char eee[] = "vole";
-        char rrr[] = "ako sa";
-        char ttt[] = "mas sulku";
-        snprintf(www,sizeof(www)," %X:%X:%X:%X:%X:%X",LAN_MAC[0],LAN_MAC[1],LAN_MAC[2],LAN_MAC[3],LAN_MAC[4],LAN_MAC[5] );
-        snprintf((char *)TX_BUF, sizeof(TX_BUF), Page_HTML_popisSystemu, www, eee, rrr, ttt, NazovSiete);
+        const char *ptr = NULL;
+        char rrr[] = "xx";
+        char ttt[] = "yy";
+        ptr = firmware_text;
+        snprintf(www, sizeof(www), " %X:%X:%X:%X:%X:%X", LAN_MAC[0], LAN_MAC[1], LAN_MAC[2], LAN_MAC[3], LAN_MAC[4], LAN_MAC[5]);
+        snprintf((char *)TX_BUF, sizeof(TX_BUF), Page_HTML_popisSystemu, www, ptr, rrr, ttt, NazovSiete);
         zobraz_stranky(s, (char *)TX_BUF);
       }
       else if (!strncmp((char *)TX_BUF, "GET /get?", 9) || !strncmp((char *)TX_BUF, "get /get?", 9))
@@ -353,14 +354,13 @@ void WebServerHandler(u8 s)
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
         zobraz_stranky(s, (const char *)TX_BUF);
       }
-      
+
       else if (!strncmp((char *)TX_BUF, "GET /meraj20A_1F", 16))
       {
         log_i("Super stranky zadaju Meraj 20A 1F");
-         zobraz_stranky(s, page_hlavna );
-         //zobraz_stranky(s, page_rozsah_20A_1F);
-       // EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_1F);
-        //EEPROM.commit();
+        zobraz_stranky(s, page_hlavna);
+        // EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_1F);
+        // EEPROM.commit();
         ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_20A));
         ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_20A));
         ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_20A));
@@ -368,10 +368,9 @@ void WebServerHandler(u8 s)
       else if (!strncmp((char *)TX_BUF, "GET /meraj20A_3F", 16))
       {
         log_i("Super stranky zadaju Meraj 20A 3F");
-        zobraz_stranky(s, page_hlavna );
-        //zobraz_stranky(s, page_rozsah_20A_3F);
-        //EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_3F);
-        //EEPROM.commit();
+        zobraz_stranky(s, page_hlavna);
+        // EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_3F);
+        // EEPROM.commit();
         ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_50A));
         ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_50A));
         ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_50A));
@@ -379,17 +378,16 @@ void WebServerHandler(u8 s)
       else if (!strncmp((char *)TX_BUF, "GET /meraj50A_3F", 16))
       {
         log_i("Super stranky zadaju Meraj 50A 3F");
-         zobraz_stranky(s, page_hlavna );
-         //zobraz_stranky(s, page_rozsah_50A_3F);
-       // EEPROM.writeByte(EE_rozsah_Prud, rozsah_50A_3F);
-        //EEPROM.commit();
+        zobraz_stranky(s, page_hlavna);
+        // EEPROM.writeByte(EE_rozsah_Prud, rozsah_50A_3F);
+        // EEPROM.commit();
       }
       else if (!strncmp((char *)TX_BUF, "GET /meraj100A_3F", 16))
       {
         log_i("Super stranky zadaju Meraj 100A 3F");
-        zobraz_stranky(s, page_hlavna );//zobraz_stranky(s, page_rozsah_100A_3F);
-        //EEPROM.writeByte(EE_rozsah_Prud, rozsah_100A_3F);
-       // EEPROM.commit();
+        zobraz_stranky(s, page_hlavna); // zobraz_stranky(s, page_rozsah_100A_3F);
+        // EEPROM.writeByte(EE_rozsah_Prud, rozsah_100A_3F);
+        // EEPROM.commit();
         ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_100A));
         ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_100A));
         ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_100A));
@@ -399,20 +397,19 @@ void WebServerHandler(u8 s)
       {
         log_i("Super stranky zadaju GEY AJAX s 20A 1F");
         citac += 0.01f;
-        AjaxObjekt["U1"] = String(citac);//String(meranie.U1);
+        AjaxObjekt["U1"] = String(citac); // String(meranie.U1);
         AjaxObjekt["I1"] = String(meranie.I1);
         jsonString = JSON.stringify(AjaxObjekt);
         jsonString.toCharArray((char *)TX_BUF, jsonString.length() + 1);
         zobraz_stranky(s, (const char *)TX_BUF);
       }
 
-
       else if (!strncmp((char *)TX_BUF, "GET /posliUI_data", 17) || !strncmp((char *)TX_BUF, "get /posliUI_data", 17))
       {
         log_i("Super stranky zadaju GET AJAX s posliUI_data");
         citac += 0.01f;
-        AjaxObjekt["U1"] = String(citac);//String(meranie.U1);
-        AjaxObjekt["I1"] = String(citac); //String(meranie.I1);
+        AjaxObjekt["U1"] = String(citac); // String(meranie.U1);
+        AjaxObjekt["I1"] = String(citac); // String(meranie.I1);
         AjaxObjekt["U2"] = String(meranie.U2);
         AjaxObjekt["I2"] = String(meranie.I2);
         AjaxObjekt["U3"] = String(meranie.U3);
@@ -426,11 +423,11 @@ void WebServerHandler(u8 s)
     }
   }
 
-  else if (st == SnSR::CLOSE_WAIT ) //0x1c  SOCK_CLOSE_WAIT
+  else if (st == SnSR::CLOSE_WAIT) // 0x1c  SOCK_CLOSE_WAIT
   {
     disconnect(s);
   }
-  else if (st == SnSR::CLOSED ) //  0x00 SOCK_CLOSED
+  else if (st == SnSR::CLOSED) //  0x00 SOCK_CLOSED
   {
     socket(s, 1, 80, 0x00);
   }
