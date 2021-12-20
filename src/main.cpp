@@ -362,6 +362,11 @@ void WebServerHandler(u8 s)
         ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_20A));
         ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_20A));
         ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_20A));
+        if (flg.TCPsocketConneknuty == true)
+        {
+          snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO ze stranky zadaju Meraj 20A 1F !!");
+          send(TCPsocket, TX_BUF, strlen((char *)TX_BUF));
+        }
       }
       else if (!strncmp((char *)TX_BUF, "GET /meraj20A_3F", 16))
       {
@@ -369,9 +374,14 @@ void WebServerHandler(u8 s)
         zobraz_stranky(s, page_hlavna);
         // EEPROM.writeByte(EE_rozsah_Prud, rozsah_20A_3F);
         // EEPROM.commit();
-        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_50A));
-        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_50A));
-        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_50A));
+        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_20A));
+        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_20A));
+        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_20A));
+        if (flg.TCPsocketConneknuty == true)
+        {
+          snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO ze stranky zadaju Meraj 20A 3F !!");
+          send(TCPsocket, TX_BUF, strlen((char *)TX_BUF));
+        }
       }
       else if (!strncmp((char *)TX_BUF, "GET /meraj50A_3F", 16))
       {
@@ -379,6 +389,14 @@ void WebServerHandler(u8 s)
         zobraz_stranky(s, page_hlavna);
         // EEPROM.writeByte(EE_rozsah_Prud, rozsah_50A_3F);
         // EEPROM.commit();
+        ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_50A));
+        ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_50A));
+        ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_50A));
+        if (flg.TCPsocketConneknuty == true)
+        {
+          snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO ze stranky zadaju Meraj 50A 3F !!");
+          send(TCPsocket, TX_BUF, strlen((char *)TX_BUF));
+        }
       }
       else if (!strncmp((char *)TX_BUF, "GET /meraj100A_3F", 16))
       {
@@ -389,6 +407,11 @@ void WebServerHandler(u8 s)
         ADE9078_Wr32(ADDR_AIGAIN, EEPROM.readLong(EE_Iin_gain_1_100A));
         ADE9078_Wr32(ADDR_BIGAIN, EEPROM.readLong(EE_Iin_gain_2_100A));
         ADE9078_Wr32(ADDR_CIGAIN, EEPROM.readLong(EE_Iin_gain_3_100A));
+        if (flg.TCPsocketConneknuty == true)
+        {
+          snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO ze stranky zadaju Meraj 100A 3F !!");
+          send(TCPsocket, TX_BUF, strlen((char *)TX_BUF));
+        }
       }
 
       else if (!strncmp((char *)TX_BUF, "GET /posliUI_20A_1F?", 20) || !strncmp((char *)TX_BUF, "get /posliUI_20A_1F?", 20))
@@ -463,11 +486,25 @@ void TCP_handler(u8 s)
         // zobraz_stranky(DebugLog_html);
       }
 
-      // pro MAC:
+      // pro MAC:00:04:1F:B7:47:85
       //  Energy_calib$01$07$00$00 $01$70$ff$ff $01$4a$00$00 $ff$01$00$00 $01$00$00$00 $01$00$00$00 $01$00$00$00 $00$01$00$00 $00$00$00$00
-      //  Energy_c_20A$01$3e$ef$10 $01$3e$ef$10 $01$3e$ef$10
+      //  Energy_c_20A$01$10$d0$10 $01$10$d3$10 $01$00$d2$10
+      //  Energy_c_50A$01$00$c5$10 $01$00$c6$10 $01$00$c6$10
+      //  Energy__100A$01$00$bb$10 $01$00$bd$10 $01$00$bd$10
+      
+      // pro MAC: 00:E0:4C:18:82:1C  MaC:$00$e0$4c$18$82$1C
+      //  Energy_calib$11$b0$04$00 $11$40$04$00 $11$00$05$00 $ff$01$00$00 $01$00$00$00 $01$00$00$00 $e0$ff$ff$ff $e0$ff$ff$ff $e0$ff$ff$ff
+      //  Energy_c_20A$01$10$e5$10 $01$10$e3$10 $01$00$e5$10
+      //  Energy_c_50A$01$00$d6$10 $01$00$d7$10 $01$90$d8$10
+      //  Energy__100A$01$60$cd$10 $01$a0$cd$10 $01$00$d5$10
 
-      else if (!strncmp((const char *)TX_BUF, "MaC:", 4)) // MaC:$81$20$13$57$C8$CA
+      
+      // pro MAC: 00:14:78:7C:62:02  MaC:$00$14$78$7C$62$02
+      //  Energy_calib$11$bb$02$00$11$93$04$00$11$7b$02$00$ff$01$00$00$01$00$00$00$01$00$00$00$e0$ff$ff$ff$e0$ff$ff$ff$e0$ff$ff$ff
+      //  Energy_c_20A$01$90$de$10$01$10$de$10$01$40$dc$10
+      //  Energy_c_50A$01$de$d2$10$01$00$d2$10$01$90$d0$10
+      //  Energy__100A$01$60$cd$10 $01$a0$cd$10 $01$00$d5$10
+      else if (!strncmp((const char *)TX_BUF, "MaC:", 4)) // MaC:$81$20$13$57$C8$CA  MaC:$00$e0$4c$18$82$1C  MaC:$00$14$78$7C$62$02
       {
         for (u8 i = 0; i < 6; i++)
         {
