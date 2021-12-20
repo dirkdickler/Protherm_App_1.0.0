@@ -193,8 +193,9 @@ void setup(void)
   Serial.println("Spustam applikaciu...Beta 1");
   NacitajEEPROM_setting();
   System_init();
-  // NacitajSuborzSD();
 
+  log_i("Idem citat subore z SD karty po init web");
+  NacitajSuborzSD();
   // FuncServer_On();
 
   //  server.begin();
@@ -212,9 +213,6 @@ void setup(void)
   // t1.enable();
   // Serial.println("Enabled t1");
   // t2.enable();
-
-  log_i("Idem citat subore z SD karty po init web");
-  // NacitajSuborzSD();
 
   // assert(rc == pdPASS);
 
@@ -406,10 +404,9 @@ void WebServerHandler(u8 s)
 
       else if (!strncmp((char *)TX_BUF, "GET /posliUI_data", 17) || !strncmp((char *)TX_BUF, "get /posliUI_data", 17))
       {
-        log_i("Super stranky zadaju GET AJAX s posliUI_data");
-        citac += 0.01f;
-        AjaxObjekt["U1"] = String(citac); // String(meranie.U1);
-        AjaxObjekt["I1"] = String(citac); // String(meranie.I1);
+        // log_i("Super stranky zadaju GET AJAX s posliUI_data");
+        AjaxObjekt["U1"] = String(meranie.U1);
+        AjaxObjekt["I1"] = String(meranie.I1);
         AjaxObjekt["U2"] = String(meranie.U2);
         AjaxObjekt["I2"] = String(meranie.I2);
         AjaxObjekt["U3"] = String(meranie.U3);
@@ -480,11 +477,11 @@ void TCP_handler(u8 s)
         EEPROM.writeBytes(EE_MAC_LAN, LAN_MAC, 6);
         EEPROM.commit();
 
-        snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO nastaveni MAC adrese");
+        snprintf((char *)TX_BUF, sizeof(TX_BUF), "\r\n*****DOSLO nastavenie MAC adrese");
         send(s, TX_BUF, strlen((char *)TX_BUF));
       }
 
-      else if (!strncmp((const char *)TX_BUF, "Energy_calib", 12))
+      else if (!strncmp((const char *)TX_BUF, "Energy_calib", 12)) // tu sa kalibruje napetie a offsety AJ PRUDU!!
       {
         EEPROM.writeLong(EE_Vin_gain_1, *(i32 *)&TX_BUF[12]);
         EEPROM.writeLong(EE_Vin_gain_2, *(i32 *)&TX_BUF[16]);
@@ -688,6 +685,15 @@ void t2_ethTask(void *arg)
   while (1)
   {
     // ESP.getFreeHeap();  xPortGetFreeHeapSize()
+    if (digitalRead(LEDstatus_pin) == 1)
+    {
+      digitalWrite(LEDstatus_pin, 0);
+    }
+    else
+    {
+      digitalWrite(LEDstatus_pin, 1);
+    }
+
     log_i("RTOS free HeAP:%d", ESP.getFreeHeap());
     if (flg.TCPsocketConneknuty == true)
     {

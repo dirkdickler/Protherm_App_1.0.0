@@ -4,6 +4,8 @@
 #define ADC_gain_pin 17
 #define ADC_curren_pin 16
 
+#define LEDstatus_pin  33
+
 #define DI4_pin 15
 #define DI3_pin 14
 #define DI2_pin 13

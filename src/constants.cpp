@@ -3,6 +3,7 @@
 #include "constants.h"
 
 
+const char firmware_text[] = firmware;
 FS *filesystem = &SPIFFS;
 VSTUP_t DIN[pocetDIN_celkovo];
 

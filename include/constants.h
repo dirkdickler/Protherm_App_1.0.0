@@ -130,6 +130,7 @@ typedef struct //
 	uint8_t byte;
 } DigitalOUT_t;
 
+extern const char firmware_text[];
 extern VSTUP_t DIN[pocetDIN_celkovo];
 extern u8 LAN_MAC[6];
 extern byte mac[][NUMBER_OF_MAC];

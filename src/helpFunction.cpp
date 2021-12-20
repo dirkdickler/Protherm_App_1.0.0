@@ -40,6 +40,7 @@ void System_init(void)
 	pinMode(WIZ_CS_pin, OUTPUT);
 	pinMode(WIZ_RES_pin, OUTPUT);
 
+	pinMode(LEDstatus_pin, OUTPUT);
 	// WizChip_RST_HI();
 	// WizChip_CS_HI();
 
@@ -237,6 +238,15 @@ int8_t NacitajEEPROM_setting(void)
 	slovo = String(EEPROM.readString(EE_NazovSiete)); //, NazovSiete,16);//String(Ethernet.localIP());
 	log_i("EEPROM nazov siete je vycitane: %s", slovo);
 	EEPROM.readBytes(EE_MAC_LAN, LAN_MAC, 6);
+	if (LAN_MAC[0] == 0xff)
+	{
+		LAN_MAC[0] = 0;
+		LAN_MAC[1] = 0x04;
+		LAN_MAC[2] = 0x20;
+		LAN_MAC[3] = 0x30;
+		LAN_MAC[4] = 0x40;
+		LAN_MAC[5] = 0x60;
+	}
 
 	if (NazovSiete[0] != 0xff) // ak mas novy modul tak EEPROM vrati prazdne hodnoty, preto ich neprepisem z EEPROM, ale necham default
 	{
@@ -336,7 +346,7 @@ void UDPhandler(void)
 		// 		 LAN_MAC[0], LAN_MAC[1], LAN_MAC[2], LAN_MAC[3], LAN_MAC[4], LAN_MAC[5]);
 		// log_i("Toto le replybuffer:%s",ReplyBuffer);
 
-		Udp.write(ReplyBuffer,22);  //tu musis mat kolko poslat, lebo ak mas MAC zacinajucu 0 tak to bere jak strring a naposle to
+		Udp.write(ReplyBuffer, 22); // tu musis mat kolko poslat, lebo ak mas MAC zacinajucu 0 tak to bere jak strring a naposle to
 		Udp.endPacket();
 	}
 }
