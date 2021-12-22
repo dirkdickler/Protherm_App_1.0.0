@@ -190,7 +190,7 @@ void setup(void)
 {
 
   Serial.begin(115200);
-  Serial.println("Spustam applikaciu...Beta 1");
+  Serial.println("Spustam applikaciu...Beta 3");
   NacitajEEPROM_setting();
   System_init();
 
@@ -341,6 +341,45 @@ void WebServerHandler(u8 s)
         snprintf(www, sizeof(www), " %X:%X:%X:%X:%X:%X", LAN_MAC[0], LAN_MAC[1], LAN_MAC[2], LAN_MAC[3], LAN_MAC[4], LAN_MAC[5]);
         snprintf((char *)TX_BUF, sizeof(TX_BUF), Page_HTML_popisSystemu, www, ptr, rrr, ttt, NazovSiete);
         zobraz_stranky(s, (char *)TX_BUF);
+
+        u8 loo = 0;
+        File profile;
+        do
+        {
+          profile = SD.open("/aaa.txt", FILE_READ); /* code */
+          if (!profile)
+          {
+            loo++;
+            log_i("Open file vratilo profile %i", profile);
+          }
+          else
+          {
+            loo = 5;
+          }
+        } while (loo < 5);
+
+        Serial.printf("Velkost subora je :%lu\r\n", profile.size());
+        if (!profile)
+        {
+          log_i("Opening file to read failed");
+          profile.close();
+        }
+        else
+        {
+          log_i("Obsah subora po nacitani je:\n");
+
+          while (profile.available())
+          {
+            while (profile.available())
+            {
+              Serial.write(profile.read());
+            }
+
+            log_i("konec citania subora");
+            log_i("================");
+          }
+          profile.close();
+        }
       }
       else if (!strncmp((char *)TX_BUF, "GET /get?", 9) || !strncmp((char *)TX_BUF, "get /get?", 9))
       {
@@ -491,14 +530,13 @@ void TCP_handler(u8 s)
       //  Energy_c_20A$01$10$d0$10 $01$10$d3$10 $01$00$d2$10
       //  Energy_c_50A$01$00$c5$10 $01$00$c6$10 $01$00$c6$10
       //  Energy__100A$01$00$bb$10 $01$00$bd$10 $01$00$bd$10
-      
+
       // pro MAC: 00:E0:4C:18:82:1C  MaC:$00$e0$4c$18$82$1C
       //  Energy_calib$11$b0$04$00 $11$40$04$00 $11$00$05$00 $ff$01$00$00 $01$00$00$00 $01$00$00$00 $e0$ff$ff$ff $e0$ff$ff$ff $e0$ff$ff$ff
       //  Energy_c_20A$01$10$e5$10 $01$10$e3$10 $01$00$e5$10
       //  Energy_c_50A$01$00$d6$10 $01$00$d7$10 $01$90$d8$10
       //  Energy__100A$01$60$cd$10 $01$a0$cd$10 $01$00$d5$10
 
-      
       // pro MAC: 00:14:78:7C:62:02  MaC:$00$14$78$7C$62$02
       //  Energy_calib$11$bb$02$00$11$93$04$00$11$7b$02$00$ff$01$00$00$01$00$00$00$01$00$00$00$e0$ff$ff$ff$e0$ff$ff$ff$e0$ff$ff$ff
       //  Energy_c_20A$01$90$de$10$01$10$de$10$01$40$dc$10
