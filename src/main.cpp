@@ -219,7 +219,7 @@ void setup(void)
   xTaskCreatePinnedToCore(
       t1_MAIN, // Task function
       "task1", // Name
-      13000,   // Stack size
+      6000,   // Stack size
       nullptr, // Parameters
       1,       // Priority
       &htask1, // handle
@@ -229,7 +229,7 @@ void setup(void)
   xTaskCreatePinnedToCore(
       t2_ethTask, // Task function
       "task2",    // Name
-      13000,      // Stack size
+      6000,      // Stack size
       nullptr,    // Parameters
       1,          // Priority
       &htask2,    // handle
