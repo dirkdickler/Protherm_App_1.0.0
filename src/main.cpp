@@ -30,7 +30,7 @@ TaskHandle_t htask2;
 TaskHandle_t Task_handleADE9078;
 
 const char *www_username = "qqq";
-const char *www_password = "www";
+const char *www_password = "1234";
 
 IPAddress local_IP(192, 168, 1, 10);
 IPAddress gateway(192, 168, 1, 1);
@@ -38,7 +38,7 @@ IPAddress subnet(255, 255, 255, 0);
 IPAddress primaryDNS(8, 8, 8, 8);   // optional
 IPAddress secondaryDNS(8, 8, 4, 4); // optional
 
-EthernetWebServer server(8080);
+EthernetWebServer server_LAN(8080);
 
 char NazovSiete[30];
 char Heslo[30];
@@ -59,129 +59,129 @@ void Loop_10ms()
 
 void handleNotFound()
 {
-  // String message = F("File Not Found\n\n");
+  String message = F("File Not Found\n\n");
 
-  // message += F("URI: ");
-  // message += server.uri();
-  // if (server.uri() == "/data.txt")
-  // {
+  message += F("URI: ");
+  message += server_LAN.uri();
+  if (server_LAN.uri() == "/data.txt")
+  {
 
-  //   server.setContentLength(CONTENT_LENGTH_UNKNOWN); // https://bleepcoder.com/arduino/226633148/server-send-fails-to-send-strings-html-greater-than-6600
-  //   server.send(200, "text/html", "xx");
-  //   for (uint16_t i = 0; i < 300; i++)
-  //   {
-  //     server.sendContent("123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123456\r\n"); /* code */ /* code */
-  //   }
-  //   server.sendContent("KOnec");
-  //   return;
-  // }
-  // message += F("\nMethod: ");
-  // message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
-  // message += F("\nArguments: ");
-  // message += server.args();
-  // message += F("\n");
+    server_LAN.setContentLength(CONTENT_LENGTH_UNKNOWN); // https://bleepcoder.com/arduino/226633148/server-send-fails-to-send-strings-html-greater-than-6600
+    server_LAN.send(200, "text/html", "xx");
+    for (uint16_t i = 0; i < 300; i++)
+    {
+      server_LAN.sendContent("123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123456\r\n"); /* code */ /* code */
+    }
+    server_LAN.sendContent("KOnec");
+    return;
+  }
+  message += F("\nMethod: ");
+  message += (server_LAN.method() == HTTP_GET) ? F("GET") : F("POST");
+  message += F("\nArguments: ");
+  message += server_LAN.args();
+  message += F("\n");
 
-  // for (uint8_t i = 0; i < server.args(); i++)
-  // {
-  //   message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  // }
+  for (uint8_t i = 0; i < server_LAN.args(); i++)
+  {
+    message += " " + server_LAN.argName(i) + ": " + server_LAN.arg(i) + "\n";
+  }
 
-  // server.send(404, F("text/plain"), message);
+  server_LAN.send(404, F("text/plain"), message);
 }
 
 void testFunct()
 {
-  // char locBuff[2048];
-  // uint32_t index = 0;
+  char locBuff[2048];
+  uint32_t index = 0;
 
-  // log_i("Desel pozadavek na main");
-  // log_i("Main ma delku %u", strlen(DebugLog_html)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
-  // server.setContentLength(strlen(DebugLog_html));
+  log_i("Desel pozadavek na main");
+  log_i("Main ma delku %u", strlen(DebugLog_html)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
+  server_LAN.setContentLength(strlen(DebugLog_html));
 
-  // memset(locBuff, 0, sizeof(locBuff));
-  // server.send(200, "text/html", locBuff);
-  // u32 kolkoPoslnaych = 0;
-  // u32 velkostStranek = strlen(DebugLog_html);
-  // do
-  // {
-  //   if (velkostStranek < 1000)
-  //   {
-  //     memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], velkostStranek);
-  //     server.sendContent(locBuff, velkostStranek);
-  //     kolkoPoslnaych = velkostStranek;
-  //   }
-  //   else
-  //   {
-  //     u32 zostava = velkostStranek - kolkoPoslnaych;
-  //     if (zostava < 1000)
-  //     {
-  //       memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], zostava);
-  //       server.sendContent(locBuff, zostava);
-  //       kolkoPoslnaych += zostava;
-  //     }
-  //     else
-  //     {
-  //       memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], 1000);
-  //       server.sendContent(locBuff, 1000);
-  //       kolkoPoslnaych += 1000;
-  //     }
-  //   }
-  // } while (kolkoPoslnaych < velkostStranek);
+  memset(locBuff, 0, sizeof(locBuff));
+  server_LAN.send(200, "text/html", locBuff);
+  u32 kolkoPoslnaych = 0;
+  u32 velkostStranek = strlen(DebugLog_html);
+  do
+  {
+    if (velkostStranek < 1000)
+    {
+      memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], velkostStranek);
+      server_LAN.sendContent(locBuff, velkostStranek);
+      kolkoPoslnaych = velkostStranek;
+    }
+    else
+    {
+      u32 zostava = velkostStranek - kolkoPoslnaych;
+      if (zostava < 1000)
+      {
+        memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], zostava);
+        server_LAN.sendContent(locBuff, zostava);
+        kolkoPoslnaych += zostava;
+      }
+      else
+      {
+        memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], 1000);
+        server_LAN.sendContent(locBuff, 1000);
+        kolkoPoslnaych += 1000;
+      }
+    }
+  } while (kolkoPoslnaych < velkostStranek);
 
-  // // File file = SD.open("/aaa.txt", FILE_READ);
-  // //  server.streamFile(file, "text/html");
-  // //  file.close();
+  // File file = SD.open("/aaa.txt", FILE_READ);
+  //  server.streamFile(file, "text/html");
+  //  file.close();
 }
 
 void hlavne()
 {
-  // char locBuff[2048];
-  // uint32_t index = 0;
+  char locBuff[2048];
+  uint32_t index = 0;
 
-  // log_i("Desel pozadavek na main");
-  // log_i("Main ma delku %u", strlen(page_hlavne)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
-  // server.setContentLength(strlen(page_hlavne));
+  log_i("Desel pozadavek na main");
+  log_i("Main ma delku %u", strlen(DebugLog_html)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
+  server_LAN.setContentLength(strlen(DebugLog_html));
 
-  // memset(locBuff, 0, sizeof(locBuff));
-  // server.send(200, "text/html", locBuff);
-  // u32 kolkoPoslnaych = 0;
-  // u32 velkostStranek = strlen(page_hlavne);
-  // do
-  // {
-  //   if (velkostStranek < 1000)
-  //   {
-  //     memcpy(locBuff, &page_hlavne[kolkoPoslnaych], velkostStranek);
-  //     server.sendContent(locBuff, velkostStranek);
-  //     kolkoPoslnaych = velkostStranek;
-  //   }
-  //   else
-  //   {
-  //     u32 zostava = velkostStranek - kolkoPoslnaych;
-  //     if (zostava < 1000)
-  //     {
-  //       memcpy(locBuff, &page_hlavne[kolkoPoslnaych], zostava);
-  //       server.sendContent(locBuff, zostava);
-  //       kolkoPoslnaych += zostava;
-  //     }
-  //     else
-  //     {
-  //       memcpy(locBuff, &page_hlavne[kolkoPoslnaych], 1000);
-  //       server.sendContent(locBuff, 1000);
-  //       kolkoPoslnaych += 1000;
-  //     }
-  //   }
-  // } while (kolkoPoslnaych < velkostStranek);
+  memset(locBuff, 0, sizeof(locBuff));
+  server_LAN.send(200, "text/html", locBuff);
+  u32 kolkoPoslnaych = 0;
+  u32 velkostStranek = strlen(DebugLog_html);
+  do
+  {
+    if (velkostStranek < 1000)
+    {
+      memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], velkostStranek);
+      server_LAN.sendContent(locBuff, velkostStranek);
+      kolkoPoslnaych = velkostStranek;
+    }
+    else
+    {
+      u32 zostava = velkostStranek - kolkoPoslnaych;
+      if (zostava < 1000)
+      {
+        memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], zostava);
+        server_LAN.sendContent(locBuff, zostava);
+        kolkoPoslnaych += zostava;
+      }
+      else
+      {
+        memcpy(locBuff, &DebugLog_html[kolkoPoslnaych], 1000);
+        server_LAN.sendContent(locBuff, 1000);
+        kolkoPoslnaych += 1000;
+      }
+    }
+  } while (kolkoPoslnaych < velkostStranek);
 }
 
 void ReadSuborzSD()
 {
-  // char locBuff[2048];
-  // uint32_t index = 0;
+  char locBuff[2048];
+  uint32_t index = 0;
 
-  // log_i("Idenm citat suborDesel pozadavek na hlavne");
-  // server.send(200, F("text/plain"), F("subora nacitany"));
+  log_i("Idenm citat suborDesel pozadavek na hlavne");
+  server_LAN.send(200, F("text/plain"), F("subora nacitany"));
 
-  // NacitajSuborzSD();
+  NacitajSuborzSD();
 }
 
 char buff_extra[4001];
@@ -196,9 +196,9 @@ void setup(void)
 
   log_i("Idem citat subore z SD karty po init web");
   NacitajSuborzSD();
-  // FuncServer_On();
+  FuncServer_On();
 
-  //  server.begin();
+  server_LAN.begin();
 
   timer_10ms.start();
   esp_task_wdt_init(WDT_TIMEOUT, true); // enable panic so ESP32 restarts
@@ -219,7 +219,7 @@ void setup(void)
   xTaskCreatePinnedToCore(
       t1_MAIN, // Task function
       "task1", // Name
-      6000,   // Stack size
+      6000,    // Stack size
       nullptr, // Parameters
       1,       // Priority
       &htask1, // handle
@@ -229,7 +229,7 @@ void setup(void)
   xTaskCreatePinnedToCore(
       t2_ethTask, // Task function
       "task2",    // Name
-      6000,      // Stack size
+      6000,       // Stack size
       nullptr,    // Parameters
       1,          // Priority
       &htask2,    // handle
@@ -252,7 +252,7 @@ void loop(void)
   esp_task_wdt_reset();
   // runner.execute();
   timer_10ms.update();
-  // server.handleClient();
+  server_LAN.handleClient();
 
   delay(5);
 }
@@ -260,44 +260,55 @@ void loop(void)
 void FuncServer_On(void)
 {
   log_i("Zaciatok funkcie");
-  server.on("/", HTTP_GET, []()
-            {
+  server_LAN.on("/", HTTP_GET, []()
+                {
               ET_LOGWARN(F("Dosel pozadavek na Handle ROot"));
               ET_LOGWARN1(F("TCP 0 status reg:"), w5500.readSnSR(7));
               ET_LOGWARN1(F("TCP1 status reg:"), w5500.readSnSR(6));
 
-              server.send(200, F("text/plain"), F("Deska jede")); });
+              server_LAN.send(200, F("text/plain"), F("Deska jede")); });
 
-  server.on(F("/heslo"), []()
-            {
-              if (!server.authenticate(www_username, www_password))
+  server_LAN.on(F("/heslo"), []()
+                {
+              log_i("Doslo stranky / heslo");
+              if (!server_LAN.authenticate(www_username, www_password))
               {
-                return server.requestAuthentication();
+                log_i("Heslo dava return");
+                return server_LAN.requestAuthentication();
               }
-              server.send(200, F("text/plain"), F("Login OK \r\ntoto by ale asi mohel byt kuuuuuurna dlhy text")); });
+              log_i("Fajne heslo prebeglo odpovidam OK 200");
+              server_LAN.send(200, F("text/plain"), F("Login OK \r\ntoto by ale asi mohel byt kuuuuuurna dlhy text")); });
+
+  server_LAN.on(F("/pass"), []()
+                {
+    if (!server_LAN.authenticate(www_username, www_password))
+    {
+      return server_LAN.requestAuthentication();
+    }
+    server_LAN.send(200, F("text/plain"), F("Login OK")); });
 
   // server.on("/list", HTTP_GET, printDirectory);
 
-  server.serveStatic("/page2", SPIFFS, "/page2.html");
-  server.serveStatic("/page3", SPIFFS, "/page3.html");
-  server.serveStatic("/vlajka1", SPIFFS, "/CanadaFlag_1.png");
-  server.serveStatic("/vlajka2", SPIFFS, "/CanadaFlag_2.png");
-  server.serveStatic("/vlajka3", SPIFFS, "/CanadaFlag_3.jpg");
-  server.on("/main", HTTP_GET, testFunct);
-  server.on("/hlavne", HTTP_GET, hlavne);
+  server_LAN.serveStatic("/page2", SPIFFS, "/page2.html");
+  server_LAN.serveStatic("/page3", SPIFFS, "/page3.html");
+  server_LAN.serveStatic("/vlajka1", SPIFFS, "/CanadaFlag_1.png");
+  server_LAN.serveStatic("/vlajka2", SPIFFS, "/CanadaFlag_2.png");
+  server_LAN.serveStatic("/vlajka3", SPIFFS, "/CanadaFlag_3.jpg");
+  server_LAN.on("/main", HTTP_GET, testFunct);
+  server_LAN.on("/hlavne", HTTP_GET, hlavne);
 
-  server.on("/subor", HTTP_GET, ReadSuborzSD);
+  server_LAN.on("/subor", HTTP_GET, ReadSuborzSD);
 
-  server.on("/get", HTTP_GET, []()
-            { 
+  server_LAN.on("/get", HTTP_GET, []()
+                { 
               //Serial.println("ajax pozadavek ze stranek");
 
       myObject["hello"] = String(citac);
   
       jsonString = JSON.stringify(myObject);	
-      server.send(200, F("text/html"), jsonString); });
+      server_LAN.send(200, F("text/html"), jsonString); });
 
-  server.serveStatic("/aaa", SD, "/aaa.txt"); // https://randomnerdtutorials.com/esp32-web-server-microsd-card/
+  server_LAN.serveStatic("/aaa", SD, "/aaa.txt"); // https://randomnerdtutorials.com/esp32-web-server-microsd-card/
   // server.onNotFound(handleNotFound);
   log_i("Koniec funkcie");
 }
