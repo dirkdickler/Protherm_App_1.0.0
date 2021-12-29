@@ -190,7 +190,7 @@ void setup(void)
 {
 
   Serial.begin(115200);
-  Serial.println("Spustam applikaciu...Beta 3");
+  Serial.println("Spustam applikaciu...Beta 5");
   NacitajEEPROM_setting();
   System_init();
 
