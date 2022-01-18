@@ -793,7 +793,7 @@ void t2_ethTask(void *arg)
 
 void zobraz_stranky(u8 socket, const char *ptrNaStranky)
 {
-  char locBuff[2048];
+  char locBuff[2048]; 
   uint32_t index = 0;
 
   // log_i("Stranky maju delku %u", strlen(ptrNaStranky)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
