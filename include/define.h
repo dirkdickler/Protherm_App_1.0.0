@@ -23,7 +23,7 @@
 #define TCPsocket 7
 
 #define WDT_TIMEOUT 5
-#define firmware "ver20211222_001"
+#define firmware "ver20220118_001"
 
 // EEPROM adrese
 #define EE_MAC_LAN 00               // 6 bytes     6+16+16+16+16+20+2+2
