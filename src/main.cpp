@@ -142,7 +142,7 @@ void hlavne()
   log_i("Main ma delku %u", strlen(DebugLog_html)); // Serial.println("Main ma delku" + String(strlen(DebugLog_html)));
   server_LAN.setContentLength(strlen(DebugLog_html));
 
-  memset(locBuff, 0, sizeof(locBuff));
+  memset(locBuff, 0, sizeof(locBuff)); 
   server_LAN.send(200, "text/html", locBuff);
   u32 kolkoPoslnaych = 0;   
   u32 velkostStranek = strlen(DebugLog_html);
