@@ -144,7 +144,7 @@ void hlavne()
 
   memset(locBuff, 0, sizeof(locBuff));
   server_LAN.send(200, "text/html", locBuff);
-  u32 kolkoPoslnaych = 0;
+  u32 kolkoPoslnaych = 0;   
   u32 velkostStranek = strlen(DebugLog_html);
   do
   {

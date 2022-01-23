@@ -29,7 +29,7 @@ void System_init(void)
 	// log_w("TESTIK Ix storage usedd: %f/%f", 12.3, 12.4);
 	// ESP_LOGW("", "TESTIK Wx storage usedd: %ld/%ld", 23, 24);
 
-	DIN[input1].pin = DI1_pin;
+	DIN[input1].pin = DI1_pin;  
 	DIN[input2].pin = DI2_pin;
 	DIN[input3].pin = DI3_pin;
 	DIN[input4].pin = DI4_pin;
