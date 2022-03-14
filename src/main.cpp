@@ -25,7 +25,7 @@ bool GetData_flag = false;
 // Task t1(1050, TASK_FOREVER, &t1_MAIN);
 // Task t2(20, TASK_FOREVER, &t2_ethTask); 
 // Scheduler runner;
-TaskHandle_t htask1; 
+TaskHandle_t htask1;  
 TaskHandle_t htask2;
 TaskHandle_t Task_handleADE9078;
 
